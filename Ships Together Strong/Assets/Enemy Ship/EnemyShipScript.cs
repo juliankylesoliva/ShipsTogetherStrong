@@ -17,18 +17,20 @@ public class EnemyShipScript : MonoBehaviour
     /* PRIVATE ENEMY VARIABLES */
     private GameObject playerShip;
     private float distanceToPlayer = -1.0f;
+    private BaseAllyScript capturedAlly = null;
 
     /* PREFABS AND OTHER DRAG AND DROPS */
     public Transform cannon;
     public GameObject projectile;
     public Transform captureSlot;
-    public GameObject[] allySpawnList;
+    public GameObject allyPrefab;
 
     // Start is called before the first frame update
     void Start()
     {
         playerShip = GameObject.Find("Main Ship");
         rb2D = this.gameObject.GetComponent<Rigidbody2D>();
+        spawnCapturedAlly();
         StartCoroutine(calcDistanceToPlayer());
         StartCoroutine(EnemyMove());
         StartCoroutine(EnemyFire());
@@ -38,7 +40,10 @@ public class EnemyShipScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (distanceToPlayer >= despawnDistance)
+        {
+            GameObject.Destroy(this.gameObject);
+        }
     }
 
     // Moves the enemy ship in the direction it's facing
@@ -94,5 +99,49 @@ public class EnemyShipScript : MonoBehaviour
     private bool isInRange()
     {
         return distanceToPlayer > 0.0f && distanceToPlayer <= enemyChaseDistance;
+    }
+
+    // Handles collision cases
+    void OnCollisionEnter2D(Collision2D col)
+    {
+        if (col.transform.tag == "Player")
+        {
+            MainShipMovement player = col.transform.gameObject.GetComponent<MainShipMovement>();
+            player.TakeDamage();
+
+            if (capturedAlly != null)
+            {
+                capturedAlly.DetachFromShip();
+            }
+
+            GameObject.Destroy(this.gameObject);
+        }
+        else if (col.transform.tag == "Ally")
+        {
+            GameObject.Destroy(col.transform.gameObject);
+
+            if (capturedAlly != null)
+            {
+                capturedAlly.DetachFromShip();
+            }
+
+            GameObject.Destroy(this.gameObject);
+        }
+        else if (col.transform.tag == "PlayerAttack")
+        {
+            if (capturedAlly != null)
+            {
+                capturedAlly.DetachFromShip();
+            }
+        }
+        else { }
+    }
+
+    // Spawn a captured ally
+    void spawnCapturedAlly()
+    {
+        GameObject objTemp = Instantiate(allyPrefab, captureSlot);
+        capturedAlly = objTemp.GetComponent<BaseAllyScript>();
+        capturedAlly.AttachToEnemy(captureSlot);
     }
 }

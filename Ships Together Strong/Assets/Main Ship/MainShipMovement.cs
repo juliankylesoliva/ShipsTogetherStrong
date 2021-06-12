@@ -12,13 +12,23 @@ public class MainShipMovement : MonoBehaviour
     public bool enableMouseMovement = true;
     public bool enableShipMovement = true;
     public bool enableShooting = true;
+    public bool enableEjectMode = true;
 
     /* SHIP VARIABLES */
     public float baseShipSpeed = 1.0f;
     public float baseFiringDelay = 0.5f;
+    public float manualEjectSpeed = 2.0f;
+    public float damageEjectSpeed = 5.0f;
+
+    /* POWER-UP MODIFIERS */
+    private float modShipSpeed = 1.0f;
+    private float modFiringDelay = 1.0f;
+    private float modProjectileSize = 1.0f;
 
     /* PRIVATE SHIP VARIABLES */
     private bool isFiringDelayed = false;
+    private bool isEjectModeOn = false;
+    private bool isDamaged = false;
 
     /* PREFABS AND OTHER DRAG AND DROPS */
     public Transform cannon;
@@ -39,31 +49,36 @@ public class MainShipMovement : MonoBehaviour
         if (enableMouseMovement) { PointToMouse(); }
         if (enableShipMovement) { MoveShip(); }
         if (enableShooting) { FireProjectile(); }
+        if (enableEjectMode) { EjectModeHandler(); }
     }
     
     // Ship sprite points itself to the mouse cursor's position.
     void PointToMouse()
     {
-        Vector3 dirVec = Input.mousePosition - mainCam.WorldToScreenPoint(this.transform.position);
-        float angle = (Mathf.Atan2(dirVec.y, dirVec.x) * Mathf.Rad2Deg) - 90.0f;
-        this.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+        if (!isDamaged)
+        {
+            Vector3 dirVec = Input.mousePosition - mainCam.WorldToScreenPoint(this.transform.position);
+            float angle = (Mathf.Atan2(dirVec.y, dirVec.x) * Mathf.Rad2Deg) - 90.0f;
+            this.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+        }
     }
 
     // Moves the ship in the direction it is currently facing.
     void MoveShip()
     {
-        if (Input.GetKey(KeyCode.Space))
+        if (!isDamaged && Input.GetKey(KeyCode.Space))
         {
-            rb2D.AddForce(this.transform.up * baseShipSpeed);
+            rb2D.AddForce(this.transform.up * baseShipSpeed * modShipSpeed);
         }
     }
 
     // Fires a projectile in the direction the ship is currently facing.
     void FireProjectile()
     {
-        if (!isFiringDelayed && Input.GetMouseButton(0))
+        if (!isDamaged && !isFiringDelayed && Input.GetMouseButton(0))
         {
-            Instantiate(projectile, cannon);
+            GameObject tempObj = Instantiate(projectile, cannon);
+            tempObj.transform.localScale *= modProjectileSize;
             StartCoroutine(DoFiringDelay());
         }
     }
@@ -72,14 +87,14 @@ public class MainShipMovement : MonoBehaviour
     IEnumerator DoFiringDelay()
     {
         isFiringDelayed = true;
-        yield return new WaitForSeconds(baseFiringDelay);
+        yield return new WaitForSeconds(baseFiringDelay * modFiringDelay);
         isFiringDelayed = false;
     }
 
     // Handle collision cases here
     void OnCollisionEnter2D(Collision2D col)
     {
-        if (col.transform.tag == "Ally")
+        if (!isDamaged && col.transform.tag == "Ally")
         {
             int openSlot = findOpenAllySlot();
 
@@ -88,7 +103,11 @@ public class MainShipMovement : MonoBehaviour
                 BaseAllyScript ally = col.gameObject.GetComponent<BaseAllyScript>();
                 Transform chosenSlot = formationSlots[openSlot];
 
-                ally.AttachToPlayer(chosenSlot);
+                if (!ally.getIsAttached())
+                {
+                    ally.AttachToPlayer(chosenSlot);
+                    CheckPowerups();
+                }
             }
         }
     }
@@ -104,5 +123,172 @@ public class MainShipMovement : MonoBehaviour
             }
         }
         return -1;
+    }
+
+    // Function for toggling Eject Mode
+    void EjectModeHandler()
+    {
+        if (isDamaged) { return; }
+
+        if (Input.GetKeyDown(KeyCode.E) && !isEjectModeOn)
+        {
+            isEjectModeOn = true;
+        }
+
+        if (!enableEjectMode || (Input.GetKeyDown(KeyCode.Q) && isEjectModeOn))
+        {
+            isEjectModeOn = false;
+        }
+
+        if (isEjectModeOn)
+        {
+            if (Input.GetKeyDown(KeyCode.Alpha1))
+            {
+                if (isSlotOccupied(0))
+                {
+                    BaseAllyScript ally = formationSlots[0].GetChild(0).gameObject.GetComponent<BaseAllyScript>();
+                    ally.DetachFromShip(manualEjectSpeed);
+                }
+                isEjectModeOn = false;
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha2))
+            {
+                if (isSlotOccupied(1))
+                {
+                    BaseAllyScript ally = formationSlots[1].GetChild(0).gameObject.GetComponent<BaseAllyScript>();
+                    ally.DetachFromShip(manualEjectSpeed);
+                }
+                isEjectModeOn = false;
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha3))
+            {
+                if (isSlotOccupied(2))
+                {
+                    BaseAllyScript ally = formationSlots[2].GetChild(0).gameObject.GetComponent<BaseAllyScript>();
+                    ally.DetachFromShip(manualEjectSpeed);
+                }
+                isEjectModeOn = false;
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha4))
+            {
+                if (isSlotOccupied(3))
+                {
+                    BaseAllyScript ally = formationSlots[3].GetChild(0).gameObject.GetComponent<BaseAllyScript>();
+                    ally.DetachFromShip(manualEjectSpeed);
+                }
+                isEjectModeOn = false;
+            }
+            else { }
+        }
+    }
+
+    // Helper function -- checks the specified ally slot if a ship is occupied there
+    bool isSlotOccupied(int slot)
+    {
+        return formationSlots[slot].childCount == 1;
+    }
+
+    // Updates the ship's stats based on the types of ally ships collected
+    void CheckPowerups()
+    {
+        int speedCount = 0;
+        int rapidCount = 0;
+        int magnifyCount = 0;
+
+        for (int i = 0; i < formationSlots.Length; ++i)
+        {
+            if (formationSlots[i].childCount == 1)
+            {
+                BaseAllyScript ally = formationSlots[i].GetChild(0).gameObject.GetComponent<BaseAllyScript>();
+                AllyType type = ally.getPowerupType();
+
+                switch (type)
+                {
+                    case AllyType.Speed:
+                        ++speedCount;
+                        break;
+                    case AllyType.Rapid:
+                        ++rapidCount;
+                        break;
+                    case AllyType.Magnify:
+                        ++magnifyCount;
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        modShipSpeed = (1.0f + (speedCount * 0.25f));
+        modFiringDelay = (1.0f - (rapidCount * 0.125f));
+        modProjectileSize = (1.0f + (magnifyCount * 0.75f));
+    }
+
+    // Helper function -- counts how many allies are attached
+    int getAllyCount()
+    {
+        int retVal = 0;
+
+        for (int i = 0; i < formationSlots.Length; ++i)
+        {
+            if (formationSlots[i].childCount == 1)
+            {
+                ++retVal;
+            }
+        }
+
+        return retVal;
+    }
+
+    // If the player gets hit while holding ships, all ships get ejected. Otherwise, a life is lost
+    public void TakeDamage()
+    {
+        StartCoroutine(DamageCoroutine());
+    }
+
+    private IEnumerator DamageCoroutine()
+    {
+        if (!isDamaged && getAllyCount() > 0)
+        {
+            isDamaged = true;
+
+            if (isSlotOccupied(0))
+            {
+                BaseAllyScript ally = formationSlots[0].GetChild(0).gameObject.GetComponent<BaseAllyScript>();
+                ally.DetachFromShip(damageEjectSpeed);
+            }
+
+            if (isSlotOccupied(1))
+            {
+                BaseAllyScript ally = formationSlots[1].GetChild(0).gameObject.GetComponent<BaseAllyScript>();
+                ally.DetachFromShip(damageEjectSpeed);
+            }
+
+            if (isSlotOccupied(2))
+            {
+                BaseAllyScript ally = formationSlots[2].GetChild(0).gameObject.GetComponent<BaseAllyScript>();
+                ally.DetachFromShip(damageEjectSpeed);
+            }
+
+            if (isSlotOccupied(3))
+            {
+                BaseAllyScript ally = formationSlots[3].GetChild(0).gameObject.GetComponent<BaseAllyScript>();
+                ally.DetachFromShip(damageEjectSpeed);
+            }
+
+            yield return new WaitForSeconds(1.0f);
+
+            isDamaged = false;
+        }
+        else
+        {
+            rb2D.velocity = Vector3.zero;
+
+            isDamaged = true;
+
+            yield return new WaitForSeconds(5.0f);
+
+            isDamaged = false;
+        }
     }
 }
