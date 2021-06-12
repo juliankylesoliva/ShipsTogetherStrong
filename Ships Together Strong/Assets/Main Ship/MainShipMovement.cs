@@ -20,7 +20,7 @@ public class MainShipMovement : MonoBehaviour
     /* PRIVATE SHIP VARIABLES */
     private bool isFiringDelayed = false;
 
-    /* SHIP PREFABS AND OTHER DRAG AND DROPS */
+    /* PREFABS AND OTHER DRAG AND DROPS */
     public Transform cannon;
     public GameObject projectile;
     public Transform[] formationSlots;

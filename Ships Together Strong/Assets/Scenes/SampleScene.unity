@@ -547,11 +547,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1121577403}
+  - component: {fileID: 1121577404}
   - component: {fileID: 1121577402}
   - component: {fileID: 1121577401}
   m_Layer: 0
   m_Name: Enemy Ship
-  m_TagString: Ally
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -611,7 +612,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1121577400}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.08, y: -1.35, z: 0}
+  m_LocalPosition: {x: 7.79, y: -3.08, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 2123792896}
@@ -620,6 +621,27 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1121577404
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1121577400}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e62d0b2f99bfbef4fa9f952a5a9c4c27, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enemySpeed: 2
+  enemyFiringInterval: 1.5
+  enemyChaseDistance: 4.5
+  spawnDistance: 18
+  despawnDistance: 50
+  cannon: {fileID: 1050268903}
+  projectile: {fileID: 7344257712115366067, guid: e1203e511e47eff4a8b017d3376611d4, type: 3}
+  captureSlot: {fileID: 1375853394}
+  allySpawnList: []
 --- !u!1 &1375853393
 GameObject:
   m_ObjectHideFlags: 0
@@ -704,7 +726,7 @@ MonoBehaviour:
   enableMouseMovement: 1
   enableShipMovement: 1
   enableShooting: 1
-  baseShipSpeed: 5
+  baseShipSpeed: 6
   baseFiringDelay: 0.65
   cannon: {fileID: 5599983}
   projectile: {fileID: 4336492400327391159, guid: 7221e3d3737af784394d68f8673d1b18, type: 3}
@@ -1317,7 +1339,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.9205742, y: 1}
+    m_SensorSize: {x: 1.9542357, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
