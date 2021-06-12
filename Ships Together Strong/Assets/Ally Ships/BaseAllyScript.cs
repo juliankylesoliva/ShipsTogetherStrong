@@ -2,26 +2,28 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum AllyType { Base, Speed, Rapid, Magnify, Sheild, Reflector, Copycat, Score, Bomb, Parasite, Life }
+public enum AllyType { Base, Speed, Rapid, Magnify, Shield, Reflector, Copycat, Score, Bomb, Parasite, Life }
 
 public class BaseAllyScript : MonoBehaviour
 {
     /* COMPONENTS */
-    private Rigidbody2D rb2D;
+    [HideInInspector] public Rigidbody2D rb2D;
 
     /* PRIVATE VARIABLES */
-    private bool isAttached = false;
-    private float fps = 1.0f / 60.0f;
-    private float tempTimerConstant = 1.5f;
+    [HideInInspector] public bool isAttached = false;
+    [HideInInspector] public float fps = 1.0f / 60.0f;
+    [HideInInspector] public float tempTimerConstant = 1.5f;
     [SerializeField] private AllyType powerupType = AllyType.Base; // Can be edited in the inspector
 
     /* ALLY SHIP VARIABLES */
+    public bool spawnInFreefall = false;
     public float baseDespawnTimer = 10.0f;
 
     // Start is called before the first frame update
     void Start()
     {
         rb2D = this.gameObject.GetComponent<Rigidbody2D>();
+        if (spawnInFreefall) { SpawnInFreefall(); }
     }
 
     // Update is called once per frame
@@ -40,6 +42,12 @@ public class BaseAllyScript : MonoBehaviour
     public AllyType getPowerupType()
     {
         return powerupType;
+    }
+
+    // Setter method for powerupType
+    public void setPowerupType(AllyType type)
+    {
+        powerupType = type;
     }
 
     // Spawns the ally ship in a freefall state
@@ -84,7 +92,7 @@ public class BaseAllyScript : MonoBehaviour
     }
 
     // Detaches ally from its parent
-    public void DetachFromShip(float ejectSpeed = 0.0f)
+    public virtual void DetachFromShip(float ejectSpeed = 0.0f, bool isFromDamage = false)
     {
         Vector2 ejectDirection;
 
@@ -114,7 +122,7 @@ public class BaseAllyScript : MonoBehaviour
     }
 
     // Helper function used to keep track of despawn time
-    IEnumerator FreefallTimer(float seconds)
+    public IEnumerator FreefallTimer(float seconds)
     {
         if (isAttached) { yield break; }
 
@@ -130,5 +138,11 @@ public class BaseAllyScript : MonoBehaviour
         }
 
         if (!isAttached) { GameObject.Destroy(this.gameObject); }
+    }
+
+    // Call this to destroy the ally ship
+    public virtual void DestroyAllyShip()
+    {
+        GameObject.Destroy(this.gameObject);
     }
 }

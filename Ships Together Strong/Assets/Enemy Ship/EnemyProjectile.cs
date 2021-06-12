@@ -12,9 +12,10 @@ public class EnemyProjectile : PlayerProjectile
             player.TakeDamage();
             GameObject.Destroy(this.gameObject);
         }
-        else if (col.transform.tag == "Ally")
+        else if (col.transform.tag == "Ally" && (col.transform.parent != null && col.transform.parent.parent.tag == "Player"))
         {
-            GameObject.Destroy(col.transform.gameObject);
+            BaseAllyScript allyTemp = col.transform.gameObject.GetComponent<BaseAllyScript>();
+            allyTemp.DestroyAllyShip();
             GameObject.Destroy(this.gameObject);
         }
         else { }

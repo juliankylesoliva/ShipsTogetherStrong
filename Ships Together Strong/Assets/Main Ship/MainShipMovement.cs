@@ -29,6 +29,7 @@ public class MainShipMovement : MonoBehaviour
     private bool isFiringDelayed = false;
     private bool isEjectModeOn = false;
     private bool isDamaged = false;
+    private int totalEnemiesDestroyed = 0;
 
     /* PREFABS AND OTHER DRAG AND DROPS */
     public Transform cannon;
@@ -148,6 +149,7 @@ public class MainShipMovement : MonoBehaviour
                 {
                     BaseAllyScript ally = formationSlots[0].GetChild(0).gameObject.GetComponent<BaseAllyScript>();
                     ally.DetachFromShip(manualEjectSpeed);
+                    CheckPowerups();
                 }
                 isEjectModeOn = false;
             }
@@ -157,6 +159,7 @@ public class MainShipMovement : MonoBehaviour
                 {
                     BaseAllyScript ally = formationSlots[1].GetChild(0).gameObject.GetComponent<BaseAllyScript>();
                     ally.DetachFromShip(manualEjectSpeed);
+                    CheckPowerups();
                 }
                 isEjectModeOn = false;
             }
@@ -166,6 +169,7 @@ public class MainShipMovement : MonoBehaviour
                 {
                     BaseAllyScript ally = formationSlots[2].GetChild(0).gameObject.GetComponent<BaseAllyScript>();
                     ally.DetachFromShip(manualEjectSpeed);
+                    CheckPowerups();
                 }
                 isEjectModeOn = false;
             }
@@ -175,6 +179,7 @@ public class MainShipMovement : MonoBehaviour
                 {
                     BaseAllyScript ally = formationSlots[3].GetChild(0).gameObject.GetComponent<BaseAllyScript>();
                     ally.DetachFromShip(manualEjectSpeed);
+                    CheckPowerups();
                 }
                 isEjectModeOn = false;
             }
@@ -255,26 +260,28 @@ public class MainShipMovement : MonoBehaviour
             if (isSlotOccupied(0))
             {
                 BaseAllyScript ally = formationSlots[0].GetChild(0).gameObject.GetComponent<BaseAllyScript>();
-                ally.DetachFromShip(damageEjectSpeed);
+                ally.DetachFromShip(damageEjectSpeed, true);
             }
 
             if (isSlotOccupied(1))
             {
                 BaseAllyScript ally = formationSlots[1].GetChild(0).gameObject.GetComponent<BaseAllyScript>();
-                ally.DetachFromShip(damageEjectSpeed);
+                ally.DetachFromShip(damageEjectSpeed, true);
             }
 
             if (isSlotOccupied(2))
             {
                 BaseAllyScript ally = formationSlots[2].GetChild(0).gameObject.GetComponent<BaseAllyScript>();
-                ally.DetachFromShip(damageEjectSpeed);
+                ally.DetachFromShip(damageEjectSpeed, true);
             }
 
             if (isSlotOccupied(3))
             {
                 BaseAllyScript ally = formationSlots[3].GetChild(0).gameObject.GetComponent<BaseAllyScript>();
-                ally.DetachFromShip(damageEjectSpeed);
+                ally.DetachFromShip(damageEjectSpeed, true);
             }
+
+            CheckPowerups();
 
             yield return new WaitForSeconds(1.0f);
 
@@ -290,5 +297,17 @@ public class MainShipMovement : MonoBehaviour
 
             isDamaged = false;
         }
+    }
+
+    // Accessor method for totalEnemiesDestroyed
+    public int getTotalEnemiesDestroyed()
+    {
+        return totalEnemiesDestroyed;
+    }
+
+    // Setter method for totalEnemiesDestroyed
+    public void increaseTotalEnemiesDestroyed()
+    {
+        ++totalEnemiesDestroyed;
     }
 }

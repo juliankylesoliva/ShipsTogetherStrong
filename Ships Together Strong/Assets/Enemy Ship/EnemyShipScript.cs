@@ -11,8 +11,8 @@ public class EnemyShipScript : MonoBehaviour
     public float enemySpeed = 1.5f;
     public float enemyFiringInterval = 1.0f;
     public float enemyChaseDistance = 4.5f;
-    public float spawnDistance = 18.0f;
     public float despawnDistance = 50.0f;
+    public float spawnAngleDeviation = 5.0f;
 
     /* PRIVATE ENEMY VARIABLES */
     private GameObject playerShip;
@@ -23,18 +23,13 @@ public class EnemyShipScript : MonoBehaviour
     public Transform cannon;
     public GameObject projectile;
     public Transform captureSlot;
-    public GameObject allyPrefab;
+    public GameObject[] allyPrefabs;
 
     // Start is called before the first frame update
     void Start()
     {
         playerShip = GameObject.Find("Main Ship");
         rb2D = this.gameObject.GetComponent<Rigidbody2D>();
-        spawnCapturedAlly();
-        StartCoroutine(calcDistanceToPlayer());
-        StartCoroutine(EnemyMove());
-        StartCoroutine(EnemyFire());
-        StartCoroutine(EnemyRotate());
     }
 
     // Update is called once per frame
@@ -46,9 +41,25 @@ public class EnemyShipScript : MonoBehaviour
         }
     }
 
+    // Initializes the enemy's AI
+    public void InitializeEnemy()
+    {
+        pointTowardsPlayer(spawnAngleDeviation);
+        rollForCapturedAlly();
+        StartCoroutine(calcDistanceToPlayer());
+        StartCoroutine(EnemyMove());
+        StartCoroutine(EnemyFire());
+        StartCoroutine(EnemyRotate());
+    }
+
     // Moves the enemy ship in the direction it's facing
     IEnumerator EnemyMove()
     {
+        if (rb2D == null)
+        {
+            rb2D = this.gameObject.GetComponent<Rigidbody2D>();
+        }
+
         while (true)
         {
             rb2D.AddForce(this.transform.up * enemySpeed);
@@ -77,12 +88,23 @@ public class EnemyShipScript : MonoBehaviour
         {
             if (isInRange())
             {
-                Vector3 dirVec = playerShip.transform.position - this.transform.position;
-                float angle = (Mathf.Atan2(dirVec.y, dirVec.x) * Mathf.Rad2Deg) - 90.0f;
-                this.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+                pointTowardsPlayer();
             }
             yield return new WaitForSeconds(0.01f);
         }
+    }
+
+    // Points toward the player
+    void pointTowardsPlayer(float randomizer = 0.0f)
+    {
+        if (playerShip == null)
+        {
+            playerShip = GameObject.Find("Main Ship");
+        }
+
+        Vector3 dirVec = playerShip.transform.position - this.transform.position;
+        float angle = (Mathf.Atan2(dirVec.y, dirVec.x) * Mathf.Rad2Deg) - 90.0f;
+        this.transform.rotation = Quaternion.AngleAxis(angle + (Random.Range(-randomizer, randomizer)), Vector3.forward);
     }
 
     // Helper function that constantly calculates distance to player
@@ -116,9 +138,10 @@ public class EnemyShipScript : MonoBehaviour
 
             GameObject.Destroy(this.gameObject);
         }
-        else if (col.transform.tag == "Ally")
+        else if (col.transform.tag == "Ally" && (col.transform.parent != null && col.transform.parent.parent.tag == "Player"))
         {
-            GameObject.Destroy(col.transform.gameObject);
+            BaseAllyScript allyTemp = col.transform.gameObject.GetComponent<BaseAllyScript>();
+            allyTemp.DestroyAllyShip();
 
             if (capturedAlly != null)
             {
@@ -137,11 +160,102 @@ public class EnemyShipScript : MonoBehaviour
         else { }
     }
 
-    // Spawn a captured ally
-    void spawnCapturedAlly()
+    // Random chance to spawn a captured ally
+    void rollForCapturedAlly(int limit = 50)
     {
-        GameObject objTemp = Instantiate(allyPrefab, captureSlot);
+        int rng = Random.Range(1, (limit + 1));
+
+        if (rng >= 1 && rng <= 10)
+        {
+            // No ally
+        }
+        else if (rng >= 11 && rng <= 30)
+        {
+            spawnCapturedAlly(AllyType.Speed);
+        }
+        else if (rng >= 31 && rng <= 50)
+        {
+            spawnCapturedAlly(AllyType.Rapid);
+        }
+        else if (rng >= 51 && rng <= 70)
+        {
+            spawnCapturedAlly(AllyType.Magnify);
+        }
+        else if (rng >= 71 && rng <= 75)
+        {
+            spawnCapturedAlly(AllyType.Shield);
+        }
+        else if (rng >= 76 && rng <= 80)
+        {
+            spawnCapturedAlly(AllyType.Reflector);
+        }
+        else if (rng >= 81 && rng <= 85)
+        {
+            spawnCapturedAlly(AllyType.Copycat);
+        }
+        else if (rng >= 86 && rng <= 90)
+        {
+            spawnCapturedAlly(AllyType.Score);
+        }
+        else if (rng >= 91 && rng <= 95)
+        {
+            spawnCapturedAlly(AllyType.Bomb);
+        }
+        else if (rng >= 96 && rng <= 98)
+        {
+            spawnCapturedAlly(AllyType.Parasite);
+        }
+        else if (rng >= 99 && rng <= 100)
+        {
+            spawnCapturedAlly(AllyType.Life);
+        }
+        else { /* Nothing */ }
+    }
+
+    // Spawn a captured ally
+    void spawnCapturedAlly(AllyType type = AllyType.Base)
+    {
+        GameObject objTemp;
+
+        switch (type)
+        {
+            case AllyType.Speed:
+                objTemp = Instantiate(allyPrefabs[0], captureSlot);
+                break;
+            case AllyType.Rapid:
+                objTemp = Instantiate(allyPrefabs[0], captureSlot);
+                break;
+            case AllyType.Magnify:
+                objTemp = Instantiate(allyPrefabs[0], captureSlot);
+                break;
+            case AllyType.Shield:
+                objTemp = Instantiate(allyPrefabs[1], captureSlot);
+                break;
+            case AllyType.Reflector:
+                objTemp = Instantiate(allyPrefabs[2], captureSlot);
+                break;
+            case AllyType.Copycat:
+                objTemp = Instantiate(allyPrefabs[3], captureSlot);
+                break;
+            case AllyType.Score:
+                objTemp = Instantiate(allyPrefabs[4], captureSlot);
+                break;
+            case AllyType.Bomb:
+                objTemp = Instantiate(allyPrefabs[5], captureSlot);
+                break;
+            case AllyType.Parasite:
+                objTemp = Instantiate(allyPrefabs[6], captureSlot);
+                break;
+            case AllyType.Life:
+                objTemp = Instantiate(allyPrefabs[7], captureSlot);
+                break;
+            default:
+                objTemp = Instantiate(allyPrefabs[0], captureSlot);
+                break;
+        }
+
         capturedAlly = objTemp.GetComponent<BaseAllyScript>();
+        capturedAlly.setPowerupType(type);
         capturedAlly.AttachToEnemy(captureSlot);
     }
 }

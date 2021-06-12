@@ -57,7 +57,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2299970365415207450}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 7.79, y: -3.08, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 2299970365879802274}
@@ -80,13 +80,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemySpeed: 2
   enemyFiringInterval: 1.6
-  enemyChaseDistance: 4.5
-  spawnDistance: 18
-  despawnDistance: 50
+  enemyChaseDistance: 9
+  despawnDistance: 36
+  spawnAngleDeviation: 5
   cannon: {fileID: 2299970366954508101}
   projectile: {fileID: 7344257712115366067, guid: e1203e511e47eff4a8b017d3376611d4, type: 3}
   captureSlot: {fileID: 2299970365149380848}
-  allyPrefab: {fileID: 3340936844329078074, guid: cbfb1bf20d71a4a4d812fcc1def06413, type: 3}
+  allyPrefabs:
+  - {fileID: 3340936844329078074, guid: cbfb1bf20d71a4a4d812fcc1def06413, type: 3}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!50 &2299970365415207448
 Rigidbody2D:
   serializedVersion: 4

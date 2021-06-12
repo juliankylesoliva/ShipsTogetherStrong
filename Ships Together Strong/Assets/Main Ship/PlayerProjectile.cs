@@ -8,9 +8,13 @@ public class PlayerProjectile : MonoBehaviour
     public float projectileSpeed = 10.0f;
     public float activeTime = 1.0f;
 
+    /* PRIVATE VARIABLES */
+    private MainShipMovement playerShip;
+
     // Start is called before the first frame update
     void Start()
     {
+        playerShip = transform.parent.parent.gameObject.GetComponent<MainShipMovement>();
         transform.parent = null;
         StartCoroutine(expireTimer());
     }
@@ -33,12 +37,14 @@ public class PlayerProjectile : MonoBehaviour
     {
         if (col.transform.tag == "Enemy")
         {
+            playerShip.increaseTotalEnemiesDestroyed();
             GameObject.Destroy(col.transform.gameObject);
             GameObject.Destroy(this.gameObject);
         }
         else if (col.transform.tag == "Ally" && (col.transform.parent == null || col.transform.parent.parent.tag == "Enemy"))
         {
-            GameObject.Destroy(col.transform.gameObject);
+            BaseAllyScript allyTemp = col.transform.gameObject.GetComponent<BaseAllyScript>();
+            allyTemp.DestroyAllyShip();
             GameObject.Destroy(this.gameObject);
         }
         else { }
