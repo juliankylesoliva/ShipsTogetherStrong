@@ -98,8 +98,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16a271b0c8424564381d8bf1aaa823de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  projectileSpeed: 15
+  projectileSpeed: 16
   activeTime: 0.8
+  playerShip: {fileID: 0}
 --- !u!70 &171443846248534220
 CapsuleCollider2D:
   m_ObjectHideFlags: 0

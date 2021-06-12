@@ -19,6 +19,7 @@ public class MainShipMovement : MonoBehaviour
     public float baseFiringDelay = 0.5f;
     public float manualEjectSpeed = 2.0f;
     public float damageEjectSpeed = 5.0f;
+    public int startingLives = 3;
 
     /* POWER-UP MODIFIERS */
     private float modShipSpeed = 1.0f;
@@ -30,6 +31,7 @@ public class MainShipMovement : MonoBehaviour
     private bool isEjectModeOn = false;
     private bool isDamaged = false;
     private int totalEnemiesDestroyed = 0;
+    private int livesLeft;
 
     /* PREFABS AND OTHER DRAG AND DROPS */
     public Transform cannon;
@@ -42,6 +44,7 @@ public class MainShipMovement : MonoBehaviour
         Application.targetFrameRate = 60;
         mainCam = Camera.main;
         rb2D = this.gameObject.GetComponent<Rigidbody2D>();
+        livesLeft = startingLives;
     }
 
     // Update is called once per frame

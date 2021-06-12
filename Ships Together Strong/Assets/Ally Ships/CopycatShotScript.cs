@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ReflectShotScript : PlayerProjectile
+public class CopycatShotScript : PlayerProjectile
 {
     // Start is called before the first frame update
     void Start()
