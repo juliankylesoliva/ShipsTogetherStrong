@@ -2,34 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerProjectile : MonoBehaviour
+public class ReflectShotScript : PlayerProjectile
 {
-    /* PROJECTILE VARIABLES */
-    public float projectileSpeed = 10.0f;
-    public float activeTime = 1.0f;
-
-    /* PRIVATE VARIABLES */
-    [HideInInspector] public MainShipMovement playerShip;
-
     // Start is called before the first frame update
     void Start()
     {
-        playerShip = transform.parent.parent.gameObject.GetComponent<MainShipMovement>();
+        playerShip = transform.parent.parent.parent.parent.gameObject.GetComponent<MainShipMovement>();
         transform.parent = null;
         StartCoroutine(expireTimer());
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        this.transform.position += (this.transform.up * Time.deltaTime * projectileSpeed);
-    }
-
-    // Projectile despawns after a short period of time
-    public IEnumerator expireTimer()
-    {
-        yield return new WaitForSeconds(activeTime);
-        GameObject.Destroy(this.gameObject);
     }
 
     // Checks for collisions

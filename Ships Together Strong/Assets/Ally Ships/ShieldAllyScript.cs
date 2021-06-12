@@ -9,7 +9,7 @@ public class ShieldAllyScript : BaseAllyScript
     public float altDespawnTimer = 1.0f;
 
     // Modified to take one hit before being destroyed
-    public override void DestroyAllyShip()
+    public override void DestroyAllyShip(bool isProjectile = false)
     {
         ++numTimesHit;
         if (numTimesHit >= 2)

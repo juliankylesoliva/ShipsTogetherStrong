@@ -141,7 +141,7 @@ public class BaseAllyScript : MonoBehaviour
     }
 
     // Call this to destroy the ally ship
-    public virtual void DestroyAllyShip()
+    public virtual void DestroyAllyShip(bool isProjectile = false)
     {
         GameObject.Destroy(this.gameObject);
     }
