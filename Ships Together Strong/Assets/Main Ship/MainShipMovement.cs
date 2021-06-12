@@ -20,9 +20,10 @@ public class MainShipMovement : MonoBehaviour
     /* PRIVATE SHIP VARIABLES */
     private bool isFiringDelayed = false;
 
-    /* SHIP PREFABS */
+    /* SHIP PREFABS AND OTHER DRAG AND DROPS */
     public Transform cannon;
     public GameObject projectile;
+    public Transform[] formationSlots;
 
     // Start is called before the first frame update
     void Start()
@@ -73,5 +74,35 @@ public class MainShipMovement : MonoBehaviour
         isFiringDelayed = true;
         yield return new WaitForSeconds(baseFiringDelay);
         isFiringDelayed = false;
+    }
+
+    // Handle collision cases here
+    void OnCollisionEnter2D(Collision2D col)
+    {
+        if (col.transform.tag == "Ally")
+        {
+            int openSlot = findOpenAllySlot();
+
+            if (openSlot != -1)
+            {
+                BaseAllyScript ally = col.gameObject.GetComponent<BaseAllyScript>();
+                Transform chosenSlot = formationSlots[openSlot];
+
+                ally.AttachToPlayer(chosenSlot);
+            }
+        }
+    }
+
+    // Helper function -- finds the first available ally slot
+    int findOpenAllySlot()
+    {
+        for (int i = 0; i < formationSlots.Length; ++i)
+        {
+            if (formationSlots[i].childCount == 0)
+            {
+                return i;
+            }
+        }
+        return -1;
     }
 }
