@@ -420,6 +420,7 @@ MonoBehaviour:
   baseFiringDelay: 0.65
   manualEjectSpeed: 2
   damageEjectSpeed: 5
+  startingLives: 3
   cannon: {fileID: 5599983}
   projectile: {fileID: 4336492400327391159, guid: 7221e3d3737af784394d68f8673d1b18, type: 3}
   formationSlots:
