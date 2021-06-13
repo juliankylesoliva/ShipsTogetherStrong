@@ -2,25 +2,46 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BombAllyScript : BaseAllyScript
+public class LifeAllyScript : BaseAllyScript
 {
-    /* BOMB SHIP VARIABLES */
-    public GameObject blastPrefab;
+    /* LIFE ALLY VARIABLES */
+    public float timeUntilExtraLife = 10.0f;
 
-    // Modified to leave an explosion while being destroyed
-    public override void DestroyAllyShip(bool isProjectile = false)
+    // Modified
+    public override void AttachToPlayer(Transform slot)
     {
-        Instantiate(blastPrefab, this.transform.position, Quaternion.identity);
+        if (isAttached) { return; }
+
+        rb2D.isKinematic = true;
+        rb2D.constraints = RigidbodyConstraints2D.FreezeAll;
+
+        this.transform.parent = slot;
+        this.transform.position = slot.position;
+        this.transform.rotation = slot.rotation;
+
+        isAttached = true;
+        attachedTo = AttachType.Player;
+        StartCoroutine(DoLifeTimer());
+    }
+
+    IEnumerator DoLifeTimer()
+    {
+        yield return new WaitForSeconds(timeUntilExtraLife);
+        MainShipMovement playerShip = GameObject.Find("Main Ship").GetComponent<MainShipMovement>();
+        playerShip.incrementLivesLeft();
         GameObject.Destroy(this.gameObject);
     }
 
     // Modified
     public override void DetachFromShip(float ejectSpeed = 0.0f, bool isFromDamage = false)
     {
-        if (isFromDamage || attachedTo == AttachType.Enemy || attachedTo == AttachType.None)
+        if (attachedTo == AttachType.Player)
         {
-            // Does not explode when the main ship is damaged
-
+            // Lost if ejected
+            GameObject.Destroy(this.gameObject);
+        }
+        else
+        {
             Vector2 ejectDirection;
 
             if (this.transform.parent != null)
@@ -47,12 +68,6 @@ public class BombAllyScript : BaseAllyScript
             attachedTo = AttachType.None;
 
             StartCoroutine(FreefallTimer(baseDespawnTimer));
-        }
-        else
-        {
-            // Explodes on the spot when manually ejected
-            Instantiate(blastPrefab, this.transform.position, Quaternion.identity);
-            GameObject.Destroy(this.gameObject);
         }
     }
 }

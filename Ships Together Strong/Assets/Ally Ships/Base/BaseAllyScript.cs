@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public enum AllyType { Base, Speed, Rapid, Magnify, Shield, Reflector, Copycat, Score, Bomb, Parasite, Life }
+public enum AttachType { None, Player, Enemy }
 
 public class BaseAllyScript : MonoBehaviour
 {
@@ -14,6 +15,7 @@ public class BaseAllyScript : MonoBehaviour
     [HideInInspector] public float fps = 1.0f / 60.0f;
     [HideInInspector] public float tempTimerConstant = 1.5f;
     [SerializeField] private AllyType powerupType = AllyType.Base; // Can be edited in the inspector
+    [HideInInspector] public AttachType attachedTo = AttachType.None;
 
     /* ALLY SHIP VARIABLES */
     public bool spawnInFreefall = false;
@@ -57,7 +59,7 @@ public class BaseAllyScript : MonoBehaviour
     }
 
     // Attaches ally to player ship
-    public void AttachToPlayer(Transform slot)
+    public virtual void AttachToPlayer(Transform slot)
     {
         if (isAttached) { return; }
 
@@ -69,6 +71,7 @@ public class BaseAllyScript : MonoBehaviour
         this.transform.rotation = slot.rotation;
 
         isAttached = true;
+        attachedTo = AttachType.Player;
     }
 
     // Attaches ally to enemy ship
@@ -89,6 +92,7 @@ public class BaseAllyScript : MonoBehaviour
         this.transform.rotation = spot.rotation;
 
         isAttached = true;
+        attachedTo = AttachType.Enemy;
     }
 
     // Detaches ally from its parent
@@ -118,6 +122,7 @@ public class BaseAllyScript : MonoBehaviour
             rb2D.AddForce(ejectDirection * ejectSpeed, ForceMode2D.Impulse);
         }
 
+        attachedTo = AttachType.None;
         StartCoroutine(FreefallTimer(baseDespawnTimer));
     }
 

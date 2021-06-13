@@ -154,7 +154,7 @@ public class EnemyShipScript : MonoBehaviour
         {
             if (capturedAlly != null)
             {
-                capturedAlly.DetachFromShip();
+                capturedAlly.DetachFromShip(0.0f, true);
             }
         }
         else { }
@@ -228,6 +228,9 @@ public class EnemyShipScript : MonoBehaviour
             case AllyType.Magnify:
                 objTemp = Instantiate(allyPrefabs[0], captureSlot);
                 break;
+            case AllyType.Score:
+                objTemp = Instantiate(allyPrefabs[0], captureSlot);
+                break;
             case AllyType.Shield:
                 objTemp = Instantiate(allyPrefabs[1], captureSlot);
                 break;
@@ -237,17 +240,14 @@ public class EnemyShipScript : MonoBehaviour
             case AllyType.Copycat:
                 objTemp = Instantiate(allyPrefabs[3], captureSlot);
                 break;
-            case AllyType.Score:
+            case AllyType.Bomb:
                 objTemp = Instantiate(allyPrefabs[4], captureSlot);
                 break;
-            case AllyType.Bomb:
+            case AllyType.Parasite:
                 objTemp = Instantiate(allyPrefabs[5], captureSlot);
                 break;
-            case AllyType.Parasite:
-                objTemp = Instantiate(allyPrefabs[6], captureSlot);
-                break;
             case AllyType.Life:
-                objTemp = Instantiate(allyPrefabs[7], captureSlot);
+                objTemp = Instantiate(allyPrefabs[6], captureSlot);
                 break;
             default:
                 objTemp = Instantiate(allyPrefabs[0], captureSlot);

@@ -23,8 +23,10 @@ public class MainShipMovement : MonoBehaviour
 
     /* POWER-UP MODIFIERS */
     private float modShipSpeed = 1.0f;
+    private float modSpeedPenalty = 1.0f;
     private float modFiringDelay = 1.0f;
     private float modProjectileSize = 1.0f;
+    private int currentScoreMultiplier = 1;
 
     /* PRIVATE SHIP VARIABLES */
     private bool isFiringDelayed = false;
@@ -54,6 +56,8 @@ public class MainShipMovement : MonoBehaviour
         if (enableShipMovement) { MoveShip(); }
         if (enableShooting) { FireProjectile(); }
         if (enableEjectMode) { EjectModeHandler(); }
+        CheckPowerups();
+        Debug.Log(livesLeft);
     }
     
     // Ship sprite points itself to the mouse cursor's position.
@@ -110,7 +114,6 @@ public class MainShipMovement : MonoBehaviour
                 if (!ally.getIsAttached())
                 {
                     ally.AttachToPlayer(chosenSlot);
-                    CheckPowerups();
                 }
             }
         }
@@ -152,7 +155,6 @@ public class MainShipMovement : MonoBehaviour
                 {
                     BaseAllyScript ally = formationSlots[0].GetChild(0).gameObject.GetComponent<BaseAllyScript>();
                     ally.DetachFromShip(manualEjectSpeed);
-                    CheckPowerups();
                 }
                 isEjectModeOn = false;
             }
@@ -162,7 +164,6 @@ public class MainShipMovement : MonoBehaviour
                 {
                     BaseAllyScript ally = formationSlots[1].GetChild(0).gameObject.GetComponent<BaseAllyScript>();
                     ally.DetachFromShip(manualEjectSpeed);
-                    CheckPowerups();
                 }
                 isEjectModeOn = false;
             }
@@ -172,7 +173,6 @@ public class MainShipMovement : MonoBehaviour
                 {
                     BaseAllyScript ally = formationSlots[2].GetChild(0).gameObject.GetComponent<BaseAllyScript>();
                     ally.DetachFromShip(manualEjectSpeed);
-                    CheckPowerups();
                 }
                 isEjectModeOn = false;
             }
@@ -182,7 +182,6 @@ public class MainShipMovement : MonoBehaviour
                 {
                     BaseAllyScript ally = formationSlots[3].GetChild(0).gameObject.GetComponent<BaseAllyScript>();
                     ally.DetachFromShip(manualEjectSpeed);
-                    CheckPowerups();
                 }
                 isEjectModeOn = false;
             }
@@ -200,8 +199,10 @@ public class MainShipMovement : MonoBehaviour
     void CheckPowerups()
     {
         int speedCount = 0;
+        int shieldCount = 0;
         int rapidCount = 0;
         int magnifyCount = 0;
+        int scoreCount = 0;
 
         for (int i = 0; i < formationSlots.Length; ++i)
         {
@@ -215,11 +216,17 @@ public class MainShipMovement : MonoBehaviour
                     case AllyType.Speed:
                         ++speedCount;
                         break;
+                    case AllyType.Shield:
+                        ++shieldCount;
+                        break;
                     case AllyType.Rapid:
                         ++rapidCount;
                         break;
                     case AllyType.Magnify:
                         ++magnifyCount;
+                        break;
+                    case AllyType.Score:
+                        ++scoreCount;
                         break;
                     default:
                         break;
@@ -228,8 +235,10 @@ public class MainShipMovement : MonoBehaviour
         }
 
         modShipSpeed = (1.0f + (speedCount * 0.25f));
+        modSpeedPenalty = (1.0f - (shieldCount * 0.125f));
         modFiringDelay = (1.0f - (rapidCount * 0.125f));
         modProjectileSize = (1.0f + (magnifyCount * 0.75f));
+        currentScoreMultiplier = (1 + (scoreCount * 1));
     }
 
     // Helper function -- counts how many allies are attached
@@ -284,8 +293,6 @@ public class MainShipMovement : MonoBehaviour
                 ally.DetachFromShip(damageEjectSpeed, true);
             }
 
-            CheckPowerups();
-
             yield return new WaitForSeconds(1.0f);
 
             isDamaged = false;
@@ -312,5 +319,19 @@ public class MainShipMovement : MonoBehaviour
     public void increaseTotalEnemiesDestroyed()
     {
         ++totalEnemiesDestroyed;
+    }
+
+    // Setter methods for lives left
+    public void incrementLivesLeft()
+    {
+        ++livesLeft;
+    }
+
+    public void decrementLivesLeft()
+    {
+        if (livesLeft > 0)
+        {
+            --livesLeft;
+        }
     }
 }

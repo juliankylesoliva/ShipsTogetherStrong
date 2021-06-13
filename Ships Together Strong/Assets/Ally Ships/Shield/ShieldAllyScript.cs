@@ -22,7 +22,7 @@ public class ShieldAllyScript : BaseAllyScript
     public override void DetachFromShip(float ejectSpeed = 0.0f, bool isFromDamage = false)
     {
         // Stays with player if the player is damaged
-        if (isFromDamage && numTimesHit == 0)
+        if (attachedTo == AttachType.Player && isFromDamage && numTimesHit == 0)
         {
             ++numTimesHit;
             return;
@@ -55,6 +55,8 @@ public class ShieldAllyScript : BaseAllyScript
             }
             rb2D.AddForce(ejectDirection * ejectSpeed, ForceMode2D.Impulse);
         }
+
+        attachedTo = AttachType.None;
 
         if (numTimesHit >= 1)
         {
