@@ -465,6 +465,9 @@ MonoBehaviour:
   baseFiringDelay: 0.65
   manualEjectSpeed: 2
   damageEjectSpeed: 5
+  knockbackTime: 1
+  respawnTime: 5
+  postDamageCooldownTime: 3
   startingLives: 3
   cannon: {fileID: 5599983}
   projectile: {fileID: 4336492400327391159, guid: 7221e3d3737af784394d68f8673d1b18, type: 3}
@@ -1000,8 +1003,8 @@ MonoBehaviour:
   enemyPrefab: {fileID: 2299970365415207450, guid: ad41b009f9b00d947a55a821e2da0463, type: 3}
   spawnLocation: {fileID: 734871021}
   spawnDistance: 10
-  baseSpawnInterval: 2
-  spawnIntervalDeviation: 1
+  baseSpawnInterval: 2.5
+  spawnIntervalDeviation: 0.75
 --- !u!1 &2069414515
 GameObject:
   m_ObjectHideFlags: 0

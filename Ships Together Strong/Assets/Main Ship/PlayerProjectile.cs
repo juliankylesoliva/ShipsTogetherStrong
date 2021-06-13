@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class PlayerProjectile : MonoBehaviour
 {
+    /* COMPONENTS */
+    private Rigidbody2D rb2D;
+    
     /* PROJECTILE VARIABLES */
     public float projectileSpeed = 10.0f;
     public float activeTime = 1.0f;
@@ -15,6 +18,7 @@ public class PlayerProjectile : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        rb2D = this.gameObject.GetComponent<Rigidbody2D>();
         playerShip = transform.parent.parent.gameObject.GetComponent<MainShipMovement>();
         transform.parent = null;
         StartCoroutine(expireTimer());
@@ -23,6 +27,7 @@ public class PlayerProjectile : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //rb2D.AddForce(this.transform.up * projectileSpeed, ForceMode2D.Impulse);
         this.transform.position += (this.transform.up * Time.deltaTime * projectileSpeed);
     }
 

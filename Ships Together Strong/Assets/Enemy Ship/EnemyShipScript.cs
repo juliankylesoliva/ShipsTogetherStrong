@@ -57,7 +57,7 @@ public class EnemyShipScript : MonoBehaviour
         }
 
         pointTowardsPlayer(spawnAngleDeviation);
-        rollForCapturedAlly(50 + (playerScript.getTotalEnemiesDestroyed() / 5));
+        rollForCapturedAlly(50 + playerScript.getTotalEnemiesDestroyed());
         StartCoroutine(calcDistanceToPlayer());
         StartCoroutine(EnemyMove());
         StartCoroutine(EnemyFire());
@@ -102,12 +102,18 @@ public class EnemyShipScript : MonoBehaviour
             {
                 pointTowardsPlayer();
             }
+            else if (playerScript.getIsDamaged())
+            {
+                pointTowardsPlayer(0.0f, true);
+            }
+            else { }
+
             yield return new WaitForSeconds(0.01f);
         }
     }
 
     // Points toward the player
-    void pointTowardsPlayer(float randomizer = 0.0f)
+    void pointTowardsPlayer(float randomizer = 0.0f, bool opposite = false)
     {
         if (playerShip == null)
         {
@@ -116,7 +122,15 @@ public class EnemyShipScript : MonoBehaviour
 
         Vector3 dirVec = playerShip.transform.position - this.transform.position;
         float angle = (Mathf.Atan2(dirVec.y, dirVec.x) * Mathf.Rad2Deg) - 90.0f;
-        this.transform.rotation = Quaternion.AngleAxis(angle + (Random.Range(-randomizer, randomizer)), Vector3.forward);
+
+        if (opposite)
+        {
+            this.transform.rotation = Quaternion.AngleAxis(angle + (Random.Range(-randomizer, randomizer)) + 180.0f, Vector3.forward);
+        }
+        else
+        {
+            this.transform.rotation = Quaternion.AngleAxis(angle + (Random.Range(-randomizer, randomizer)), Vector3.forward);
+        }
     }
 
     // Helper function that constantly calculates distance to player

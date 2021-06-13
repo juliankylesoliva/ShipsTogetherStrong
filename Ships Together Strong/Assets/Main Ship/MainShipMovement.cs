@@ -19,6 +19,9 @@ public class MainShipMovement : MonoBehaviour
     public float baseFiringDelay = 0.5f;
     public float manualEjectSpeed = 2.0f;
     public float damageEjectSpeed = 5.0f;
+    public float knockbackTime = 1.0f;
+    public float respawnTime = 5.0f;
+    public float postDamageCooldownTime = 3.0f;
     public int startingLives = 3;
 
     /* POWER-UP MODIFIERS */
@@ -32,6 +35,7 @@ public class MainShipMovement : MonoBehaviour
     private bool isFiringDelayed = false;
     private bool isEjectModeOn = false;
     private bool isDamaged = false;
+    private bool isDamageproof = false;
     private int totalEnemiesDestroyed = 0;
     private int livesLeft;
 
@@ -265,7 +269,7 @@ public class MainShipMovement : MonoBehaviour
 
     private IEnumerator DamageCoroutine()
     {
-        if (!isDamaged && getAllyCount() > 0)
+        if (!isDamageproof && !isDamaged && getAllyCount() > 0)
         {
             isDamaged = true;
 
@@ -293,20 +297,41 @@ public class MainShipMovement : MonoBehaviour
                 ally.DetachFromShip(damageEjectSpeed, true);
             }
 
-            yield return new WaitForSeconds(1.0f);
+            yield return new WaitForSeconds(knockbackTime);
 
             isDamaged = false;
+
+            StartCoroutine(DamageCooldown());
         }
         else
         {
+            decrementLivesLeft();
+
             rb2D.velocity = Vector3.zero;
 
             isDamaged = true;
 
-            yield return new WaitForSeconds(5.0f);
+            if (livesLeft > 0)
+            {
+                yield return new WaitForSeconds(respawnTime);
 
-            isDamaged = false;
+                isDamaged = false;
+
+                StartCoroutine(DamageCooldown());
+            }
+            else
+            {
+                // Game Over
+            }
         }
+    }
+
+    // Post-damage invulnerability
+    IEnumerator DamageCooldown()
+    {
+        isDamageproof = true;
+        yield return new WaitForSeconds(postDamageCooldownTime);
+        isDamageproof = false;
     }
 
     // Accessor method for totalEnemiesDestroyed
