@@ -7,6 +7,7 @@ public class PlayerProjectile : MonoBehaviour
     /* PROJECTILE VARIABLES */
     public float projectileSpeed = 10.0f;
     public float activeTime = 1.0f;
+    public int baseShotScore = 10;
 
     /* PRIVATE VARIABLES */
     [HideInInspector] public MainShipMovement playerShip;
@@ -37,6 +38,8 @@ public class PlayerProjectile : MonoBehaviour
     {
         if (col.transform.tag == "Enemy")
         {
+            playerShip.scoringSystem.AddToScore(baseShotScore, playerShip.getCurrentScoreMultiplier());
+
             playerShip.increaseTotalEnemiesDestroyed();
             GameObject.Destroy(col.transform.gameObject);
             GameObject.Destroy(this.gameObject);
@@ -44,6 +47,16 @@ public class PlayerProjectile : MonoBehaviour
         else if (col.transform.tag == "Ally" && (col.transform.parent == null || col.transform.parent.parent.tag == "Enemy"))
         {
             BaseAllyScript allyTemp = col.transform.gameObject.GetComponent<BaseAllyScript>();
+
+            if (allyTemp.getPowerupType() == AllyType.Parasite)
+            {
+                playerShip.scoringSystem.AddToScore(baseShotScore, playerShip.getCurrentScoreMultiplier() * 10);
+            }
+            else
+            {
+                playerShip.scoringSystem.AddToScore(baseShotScore, -10);
+            }
+
             allyTemp.DestroyAllyShip();
             GameObject.Destroy(this.gameObject);
         }

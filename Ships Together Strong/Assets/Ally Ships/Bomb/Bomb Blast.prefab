@@ -48,6 +48,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   projectileSpeed: 0
   activeTime: 1.6
+  baseShotScore: 25
   playerShip: {fileID: 0}
 --- !u!212 &2903671661043134658
 SpriteRenderer:

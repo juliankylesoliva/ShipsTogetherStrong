@@ -18,6 +18,7 @@ public class EnemyShipScript : MonoBehaviour
     private GameObject playerShip;
     private float distanceToPlayer = -1.0f;
     private BaseAllyScript capturedAlly = null;
+    private MainShipMovement playerScript;
 
     /* PREFABS AND OTHER DRAG AND DROPS */
     public Transform cannon;
@@ -29,6 +30,7 @@ public class EnemyShipScript : MonoBehaviour
     void Start()
     {
         playerShip = GameObject.Find("Main Ship");
+        playerScript = playerShip.GetComponent<MainShipMovement>();
         rb2D = this.gameObject.GetComponent<Rigidbody2D>();
     }
 
@@ -44,8 +46,18 @@ public class EnemyShipScript : MonoBehaviour
     // Initializes the enemy's AI
     public void InitializeEnemy()
     {
+        if (playerShip == null)
+        {
+            playerShip = GameObject.Find("Main Ship");
+        }
+
+        if (playerScript == null)
+        {
+            playerScript = playerShip.GetComponent<MainShipMovement>();
+        }
+
         pointTowardsPlayer(spawnAngleDeviation);
-        rollForCapturedAlly();
+        rollForCapturedAlly(50 + (playerScript.getTotalEnemiesDestroyed() / 5));
         StartCoroutine(calcDistanceToPlayer());
         StartCoroutine(EnemyMove());
         StartCoroutine(EnemyFire());
@@ -72,7 +84,7 @@ public class EnemyShipScript : MonoBehaviour
     {
         while(true)
         {
-            if (isInRange())
+            if (isInRange() && !playerScript.getIsDamaged())
             {
                 yield return new WaitForSeconds(enemyFiringInterval);
                 Instantiate(projectile, cannon);
@@ -86,7 +98,7 @@ public class EnemyShipScript : MonoBehaviour
     {
         while (true)
         {
-            if (isInRange())
+            if (isInRange() && !playerScript.getIsDamaged())
             {
                 pointTowardsPlayer();
             }
@@ -163,7 +175,13 @@ public class EnemyShipScript : MonoBehaviour
     // Random chance to spawn a captured ally
     void rollForCapturedAlly(int limit = 50)
     {
-        int rng = Random.Range(1, (limit + 1));
+        int upper = limit;
+        if (upper > 100)
+        {
+            upper = 100;
+        }
+
+        int rng = Random.Range(1, (upper + 1));
 
         if (rng >= 1 && rng <= 10)
         {

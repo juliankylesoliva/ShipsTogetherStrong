@@ -38,6 +38,7 @@ public class MainShipMovement : MonoBehaviour
     /* PREFABS AND OTHER DRAG AND DROPS */
     public Transform cannon;
     public GameObject projectile;
+    public Scorekeeper scoringSystem;
     public Transform[] formationSlots;
 
     // Start is called before the first frame update
@@ -57,7 +58,6 @@ public class MainShipMovement : MonoBehaviour
         if (enableShooting) { FireProjectile(); }
         if (enableEjectMode) { EjectModeHandler(); }
         CheckPowerups();
-        Debug.Log(livesLeft);
     }
     
     // Ship sprite points itself to the mouse cursor's position.
@@ -333,5 +333,17 @@ public class MainShipMovement : MonoBehaviour
         {
             --livesLeft;
         }
+    }
+
+    // Accessor method for isDamaged
+    public bool getIsDamaged()
+    {
+        return isDamaged;
+    }
+
+    // Accessor method for currentScoreMultiplier
+    public int getCurrentScoreMultiplier()
+    {
+        return currentScoreMultiplier;
     }
 }
