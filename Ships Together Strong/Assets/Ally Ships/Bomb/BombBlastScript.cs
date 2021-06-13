@@ -4,11 +4,15 @@ using UnityEngine;
 
 public class BombBlastScript : PlayerProjectile
 {
+    private AudioSource soundPlayer;
+
     // Start is called before the first frame update
     void Start()
     {
         playerShip = GameObject.Find("Main Ship").GetComponent<MainShipMovement>();
+        soundPlayer = this.gameObject.GetComponent<AudioSource>();
         transform.parent = null;
+        soundPlayer.Play();
         StartCoroutine(expireTimer());
     }
 
@@ -32,7 +36,7 @@ public class BombBlastScript : PlayerProjectile
             }
             else
             {
-                playerShip.scoringSystem.AddToScore(baseShotScore, -10);
+                playerShip.scoringSystem.AddToScore(baseShotScore, -5);
             }
 
             allyTemp.DestroyAllyShip();

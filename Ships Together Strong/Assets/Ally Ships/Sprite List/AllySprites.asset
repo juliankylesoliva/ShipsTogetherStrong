@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5812fa0fa1ac707498deaa28f995b736, type: 3}
+  m_Name: AllySprites
+  m_EditorClassIdentifier: 
+  spriteList:
+  - {fileID: 21300000, guid: ccdddf9715385364bb1153faf6f87b17, type: 3}
+  - {fileID: 21300000, guid: 9602b0441c1638648a43a9bca75a0620, type: 3}
+  - {fileID: 21300000, guid: 408e4526f9f517440a24d26b4e2f7201, type: 3}
+  - {fileID: 21300000, guid: 10f0ec4f9508bab4e98f3a3dfabc1475, type: 3}
+  - {fileID: 21300000, guid: 279f4ae8a3b9f194fbf8c0ac5b84778e, type: 3}
+  - {fileID: 21300000, guid: 14ab25ae14ff44a48bc0974af0a4d218, type: 3}
+  - {fileID: 21300000, guid: 98d05403500a470478991964c19e8b6d, type: 3}
+  - {fileID: 21300000, guid: 89db55c1e2af03244b9546627046820c, type: 3}
+  - {fileID: 21300000, guid: cd6758ac72842d044bb594a57d19e7a7, type: 3}
+  - {fileID: 21300000, guid: 35ac2964415b63544828c50133f84fbe, type: 3}
+  - {fileID: 21300000, guid: a1263e5c918db0b4a98f065e969c6f51, type: 3}
+  - {fileID: 21300000, guid: 92025c33335021d489a558bd43334a94, type: 3}
+  - {fileID: 21300000, guid: 1bb1eb244378d1b4bbce7e4ec455f12f, type: 3}
+  - {fileID: 21300000, guid: 757c656145cca6440be55be8ad6f738b, type: 3}

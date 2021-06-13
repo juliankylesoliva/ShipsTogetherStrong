@@ -13,6 +13,7 @@ public class ParasiteAllyScript : BaseAllyScript
     void Start()
     {
         rb2D = this.gameObject.GetComponent<Rigidbody2D>();
+        soundPlayer = this.gameObject.GetComponent<AudioSource>();
         playerShip = GameObject.Find("Main Ship");
         if (spawnInFreefall) { SpawnInFreefall(); }
     }
@@ -21,6 +22,8 @@ public class ParasiteAllyScript : BaseAllyScript
     public override void AttachToPlayer(Transform slot)
     {
         if (isAttached) { return; }
+
+        PlaySoundEffect(allySounds.soundEffects[0]);
 
         rb2D.isKinematic = true;
         rb2D.constraints = RigidbodyConstraints2D.FreezeAll;
@@ -43,6 +46,12 @@ public class ParasiteAllyScript : BaseAllyScript
         }
         MainShipMovement shipTemp = playerShip.GetComponent<MainShipMovement>();
         shipTemp.decrementLivesLeft();
+
+        PlaySoundEffect(allySounds.soundEffects[6]);
+
+        yield return new WaitForSeconds(1.0f);
+
+        Explode();
         GameObject.Destroy(this.gameObject);
     }
 
@@ -58,6 +67,7 @@ public class ParasiteAllyScript : BaseAllyScript
         {
             // Taking damage destroys the parasite
             attachedTo = AttachType.None;
+            Explode();
             GameObject.Destroy(this.gameObject);
         }
         else

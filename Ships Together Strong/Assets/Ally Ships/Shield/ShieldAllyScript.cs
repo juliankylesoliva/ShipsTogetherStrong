@@ -12,9 +12,15 @@ public class ShieldAllyScript : BaseAllyScript
     public override void DestroyAllyShip(bool isProjectile = false)
     {
         ++numTimesHit;
+        spriteRender.sprite = allySprites.spriteList[5];
         if (numTimesHit >= 2)
         {
+            Explode();
             GameObject.Destroy(this.gameObject);
+        }
+        else
+        {
+            PlaySoundEffect(allySounds.soundEffects[5]);
         }
     }
 
@@ -25,6 +31,7 @@ public class ShieldAllyScript : BaseAllyScript
         if (attachedTo == AttachType.Player && isFromDamage && numTimesHit == 0)
         {
             ++numTimesHit;
+            spriteRender.sprite = allySprites.spriteList[5];
             return;
         }
 

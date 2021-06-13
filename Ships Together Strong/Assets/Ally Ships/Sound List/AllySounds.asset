@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b60a1c9dfc1a7346a8c2bb6dde8e5a4, type: 3}
+  m_Name: AllySounds
+  m_EditorClassIdentifier: 
+  soundEffects:
+  - {fileID: 8300000, guid: 8ea094ee447a13b4b9d00f15138e14c2, type: 3}
+  - {fileID: 8300000, guid: 3b4c1f082aaf2464d8f5417e4dab024e, type: 3}
+  - {fileID: 8300000, guid: 9cfc2673800c65e40a960747289ccbcb, type: 3}
+  - {fileID: 8300000, guid: 35be3d78c35a0ba4c84b94bc3e9f504f, type: 3}
+  - {fileID: 8300000, guid: 3d3c2cc2a837a654ab0bd5b4501413cc, type: 3}
+  - {fileID: 8300000, guid: 7e9ac832258d0f54a95bcefcb1770b59, type: 3}
+  - {fileID: 8300000, guid: 2c5819e6849eca341b5e0c12127fd3c7, type: 3}
+  - {fileID: 8300000, guid: 3404c41ef3ccda84b893a7af2d590936, type: 3}

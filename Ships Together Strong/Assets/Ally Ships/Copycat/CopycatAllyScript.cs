@@ -13,8 +13,9 @@ public class CopycatAllyScript : BaseAllyScript
     // Update is called once per frame
     void Update()
     {
-        if (isAttached && !isFiringDelayed && Input.GetMouseButton(0))
+        if (isAttached && attachedTo == AttachType.Player && !isFiringDelayed && Input.GetMouseButton(0))
         {
+            PlaySoundEffect(allySounds.soundEffects[3]);
             Instantiate(copyShotPrefab, cannon);
             StartCoroutine(DoFiringDelay());
         }

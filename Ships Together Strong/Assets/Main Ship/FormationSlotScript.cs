@@ -2,10 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum FormationName { Wing, Avian, Snake, Defense }
+
 public class FormationSlotScript : MonoBehaviour
 {
-    private enum FormationName { Wing, Avian, Snake, Defense }
-    private FormationName currentFormation = FormationName.Wing;
+    [HideInInspector] public FormationName currentFormation = FormationName.Wing;
 
     // Fill out the position and rotation values in the editor
     public float[] xPositions;

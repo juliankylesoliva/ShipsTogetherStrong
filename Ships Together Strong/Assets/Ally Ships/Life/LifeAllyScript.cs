@@ -12,6 +12,8 @@ public class LifeAllyScript : BaseAllyScript
     {
         if (isAttached) { return; }
 
+        PlaySoundEffect(allySounds.soundEffects[0]);
+
         rb2D.isKinematic = true;
         rb2D.constraints = RigidbodyConstraints2D.FreezeAll;
 
@@ -29,6 +31,10 @@ public class LifeAllyScript : BaseAllyScript
         yield return new WaitForSeconds(timeUntilExtraLife);
         MainShipMovement playerShip = GameObject.Find("Main Ship").GetComponent<MainShipMovement>();
         playerShip.incrementLivesLeft();
+
+        PlaySoundEffect(allySounds.soundEffects[7]);
+        yield return new WaitForSeconds(1.0f);
+
         GameObject.Destroy(this.gameObject);
     }
 
@@ -38,6 +44,7 @@ public class LifeAllyScript : BaseAllyScript
         if (attachedTo == AttachType.Player)
         {
             // Lost if ejected
+            Explode();
             GameObject.Destroy(this.gameObject);
         }
         else

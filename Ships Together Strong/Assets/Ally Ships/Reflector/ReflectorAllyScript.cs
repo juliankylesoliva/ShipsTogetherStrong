@@ -20,13 +20,19 @@ public class ReflectorAllyScript : BaseAllyScript
     // Modified
     public override void DestroyAllyShip(bool isProjectile = false)
     {
-        if (!isProjectile || reflectState == 0 || reflectState == 2)
+        if (attachedTo == AttachType.Player)
         {
-            GameObject.Destroy(this.gameObject);
-        }
-        else
-        {
-            reflectState = 2;
+            if (!isProjectile || reflectState == 0 || reflectState == 2)
+            {
+                Explode();
+                GameObject.Destroy(this.gameObject);
+            }
+            else
+            {
+                PlaySoundEffect(allySounds.soundEffects[1]);
+                spriteRender.sprite = allySprites.spriteList[13];
+                reflectState = 2;
+            }
         }
     }
 
@@ -35,27 +41,34 @@ public class ReflectorAllyScript : BaseAllyScript
     {
         if (isAttached && Input.GetMouseButton(0) && reflectState == 0)
         {
+            spriteRender.sprite = allySprites.spriteList[12];
             reflectState = 1;
         }
         else if (isAttached && Input.GetMouseButton(0) && reflectState == 1)
         {
+            spriteRender.sprite = allySprites.spriteList[12];
             reflectState = 1;
         }
         else if (isAttached && !Input.GetMouseButton(0) && reflectState == 1)
         {
+            spriteRender.sprite = allySprites.spriteList[6];
             reflectState = 0;
         }
         else if (isAttached && Input.GetMouseButton(0) && reflectState == 2)
         {
+            spriteRender.sprite = allySprites.spriteList[13];
             reflectState = 2;
         }
         else if (isAttached && !Input.GetMouseButton(0) && reflectState == 2)
         {
+            spriteRender.sprite = allySprites.spriteList[6];
+            PlaySoundEffect(allySounds.soundEffects[2]);
             reflectState = 0;
             Instantiate(reflectShotPrefab, cannon);
         }
         else
         {
+            spriteRender.sprite = allySprites.spriteList[6];
             reflectState = 0;
         }
     }

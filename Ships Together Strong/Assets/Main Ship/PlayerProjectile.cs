@@ -59,7 +59,7 @@ public class PlayerProjectile : MonoBehaviour
             }
             else
             {
-                playerShip.scoringSystem.AddToScore(baseShotScore, -10);
+                playerShip.scoringSystem.AddToScore(baseShotScore, -5);
             }
 
             allyTemp.DestroyAllyShip();

@@ -1,12 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class MainShipMovement : MonoBehaviour
 {
     /* COMPONENTS */
     private Camera mainCam;
     private Rigidbody2D rb2D;
+    private AudioSource soundPlayer;
+    public SpriteRenderer shipSprite;
 
     /* ENABLES */
     public bool enableMouseMovement = true;
@@ -38,12 +41,15 @@ public class MainShipMovement : MonoBehaviour
     private bool isDamageproof = false;
     private int totalEnemiesDestroyed = 0;
     private int livesLeft;
+    [HideInInspector] public AllyType[] ejectionList;
 
     /* PREFABS AND OTHER DRAG AND DROPS */
     public Transform cannon;
     public GameObject projectile;
     public Scorekeeper scoringSystem;
     public Transform[] formationSlots;
+    public AudioClip[] soundEffects;
+    public GameObject explosionPrefab;
 
     // Start is called before the first frame update
     void Start()
@@ -51,6 +57,8 @@ public class MainShipMovement : MonoBehaviour
         Application.targetFrameRate = 60;
         mainCam = Camera.main;
         rb2D = this.gameObject.GetComponent<Rigidbody2D>();
+        soundPlayer = this.gameObject.GetComponent<AudioSource>();
+        ejectionList = new AllyType[4];
         livesLeft = startingLives;
     }
 
@@ -61,7 +69,9 @@ public class MainShipMovement : MonoBehaviour
         if (enableShipMovement) { MoveShip(); }
         if (enableShooting) { FireProjectile(); }
         if (enableEjectMode) { EjectModeHandler(); }
+        CheckGameOver();
         CheckPowerups();
+        CheckQuit();
     }
     
     // Ship sprite points itself to the mouse cursor's position.
@@ -89,6 +99,7 @@ public class MainShipMovement : MonoBehaviour
     {
         if (!isDamaged && !isFiringDelayed && Input.GetMouseButton(0))
         {
+            PlaySoundEffect(soundEffects[0]);
             GameObject tempObj = Instantiate(projectile, cannon);
             tempObj.transform.localScale *= modProjectileSize;
             StartCoroutine(DoFiringDelay());
@@ -159,6 +170,7 @@ public class MainShipMovement : MonoBehaviour
                 {
                     BaseAllyScript ally = formationSlots[0].GetChild(0).gameObject.GetComponent<BaseAllyScript>();
                     ally.DetachFromShip(manualEjectSpeed);
+                    PlaySoundEffect(soundEffects[1]);
                 }
                 isEjectModeOn = false;
             }
@@ -168,6 +180,7 @@ public class MainShipMovement : MonoBehaviour
                 {
                     BaseAllyScript ally = formationSlots[1].GetChild(0).gameObject.GetComponent<BaseAllyScript>();
                     ally.DetachFromShip(manualEjectSpeed);
+                    PlaySoundEffect(soundEffects[1]);
                 }
                 isEjectModeOn = false;
             }
@@ -177,6 +190,7 @@ public class MainShipMovement : MonoBehaviour
                 {
                     BaseAllyScript ally = formationSlots[2].GetChild(0).gameObject.GetComponent<BaseAllyScript>();
                     ally.DetachFromShip(manualEjectSpeed);
+                    PlaySoundEffect(soundEffects[1]);
                 }
                 isEjectModeOn = false;
             }
@@ -186,6 +200,7 @@ public class MainShipMovement : MonoBehaviour
                 {
                     BaseAllyScript ally = formationSlots[3].GetChild(0).gameObject.GetComponent<BaseAllyScript>();
                     ally.DetachFromShip(manualEjectSpeed);
+                    PlaySoundEffect(soundEffects[1]);
                 }
                 isEjectModeOn = false;
             }
@@ -215,6 +230,8 @@ public class MainShipMovement : MonoBehaviour
                 BaseAllyScript ally = formationSlots[i].GetChild(0).gameObject.GetComponent<BaseAllyScript>();
                 AllyType type = ally.getPowerupType();
 
+                ejectionList[i] = type;
+
                 switch (type)
                 {
                     case AllyType.Speed:
@@ -236,6 +253,10 @@ public class MainShipMovement : MonoBehaviour
                         break;
                 }
             }
+            else
+            {
+                ejectionList[i] = AllyType.None;
+            }
         }
 
         modShipSpeed = (1.0f + (speedCount * 0.25f));
@@ -243,6 +264,23 @@ public class MainShipMovement : MonoBehaviour
         modFiringDelay = (1.0f - (rapidCount * 0.125f));
         modProjectileSize = (1.0f + (magnifyCount * 0.75f));
         currentScoreMultiplier = (1 + (scoreCount * 1));
+    }
+
+    // Restart on Game Over
+    void CheckGameOver()
+    {
+        if (livesLeft == 0 && Input.GetKeyDown(KeyCode.R))
+        {
+            SceneManager.LoadScene(0);
+        }
+    }
+
+    void CheckQuit()
+    {
+        if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            Application.Quit();
+        }
     }
 
     // Helper function -- counts how many allies are attached
@@ -269,9 +307,13 @@ public class MainShipMovement : MonoBehaviour
 
     private IEnumerator DamageCoroutine()
     {
-        if (!isDamageproof && !isDamaged && getAllyCount() > 0)
+        if (isDamageproof || isDamaged) { yield break; }
+
+        if (getAllyCount() > 0)
         {
+            PlaySoundEffect(soundEffects[2]);
             isDamaged = true;
+            shipSprite.color = Color.yellow;
 
             if (isSlotOccupied(0))
             {
@@ -300,22 +342,27 @@ public class MainShipMovement : MonoBehaviour
             yield return new WaitForSeconds(knockbackTime);
 
             isDamaged = false;
+            shipSprite.color = Color.white;
 
             StartCoroutine(DamageCooldown());
         }
         else
         {
+            PlaySoundEffect(soundEffects[3]);
             decrementLivesLeft();
+            shipSprite.color = Color.red;
 
             rb2D.velocity = Vector3.zero;
 
             isDamaged = true;
+            Explode();
 
             if (livesLeft > 0)
             {
                 yield return new WaitForSeconds(respawnTime);
 
                 isDamaged = false;
+                shipSprite.color = Color.white;
 
                 StartCoroutine(DamageCooldown());
             }
@@ -330,8 +377,10 @@ public class MainShipMovement : MonoBehaviour
     IEnumerator DamageCooldown()
     {
         isDamageproof = true;
+        shipSprite.color = Color.blue;
         yield return new WaitForSeconds(postDamageCooldownTime);
         isDamageproof = false;
+        shipSprite.color = Color.white;
     }
 
     // Accessor method for totalEnemiesDestroyed
@@ -358,6 +407,17 @@ public class MainShipMovement : MonoBehaviour
         {
             --livesLeft;
         }
+        else
+        {
+            // Game Over
+            isDamaged = true;
+        }
+    }
+
+    // Accessor method for lives left
+    public int getLivesLeft()
+    {
+        return livesLeft;
     }
 
     // Accessor method for isDamaged
@@ -370,5 +430,24 @@ public class MainShipMovement : MonoBehaviour
     public int getCurrentScoreMultiplier()
     {
         return currentScoreMultiplier;
+    }
+
+    // Plays sound effects
+    public void PlaySoundEffect(AudioClip theClip)
+    {
+        soundPlayer.clip = theClip;
+        soundPlayer.Play();
+    }
+
+    public void Explode()
+    {
+        GameObject objTemp = Instantiate(explosionPrefab, this.transform.position, Quaternion.identity);
+        ExplodeSoundScript explosionScript = objTemp.GetComponent<ExplodeSoundScript>();
+        explosionScript.DoExplosion(0, 1.0f);
+    }
+
+    public bool getIsEjectModeOn()
+    {
+        return isEjectModeOn;
     }
 }

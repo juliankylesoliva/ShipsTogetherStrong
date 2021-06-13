@@ -19,12 +19,15 @@ public class EnemyShipScript : MonoBehaviour
     private float distanceToPlayer = -1.0f;
     private BaseAllyScript capturedAlly = null;
     private MainShipMovement playerScript;
+    private AudioSource soundPlayer;
 
     /* PREFABS AND OTHER DRAG AND DROPS */
     public Transform cannon;
     public GameObject projectile;
     public Transform captureSlot;
     public GameObject[] allyPrefabs;
+    public AudioClip[] soundEffects;
+    public GameObject explosionPrefab;
 
     // Start is called before the first frame update
     void Start()
@@ -32,6 +35,7 @@ public class EnemyShipScript : MonoBehaviour
         playerShip = GameObject.Find("Main Ship");
         playerScript = playerShip.GetComponent<MainShipMovement>();
         rb2D = this.gameObject.GetComponent<Rigidbody2D>();
+        soundPlayer = this.gameObject.GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -87,6 +91,7 @@ public class EnemyShipScript : MonoBehaviour
             if (isInRange() && !playerScript.getIsDamaged())
             {
                 yield return new WaitForSeconds(enemyFiringInterval);
+                PlaySoundEffect(soundEffects[0]);
                 Instantiate(projectile, cannon);
             }
             yield return new WaitForSeconds(0.01f);
@@ -154,6 +159,7 @@ public class EnemyShipScript : MonoBehaviour
     {
         if (col.transform.tag == "Player")
         {
+            Explode();
             MainShipMovement player = col.transform.gameObject.GetComponent<MainShipMovement>();
             player.TakeDamage();
 
@@ -166,6 +172,7 @@ public class EnemyShipScript : MonoBehaviour
         }
         else if (col.transform.tag == "Ally" && (col.transform.parent != null && col.transform.parent.parent.tag == "Player"))
         {
+            Explode();
             BaseAllyScript allyTemp = col.transform.gameObject.GetComponent<BaseAllyScript>();
             allyTemp.DestroyAllyShip();
 
@@ -178,6 +185,7 @@ public class EnemyShipScript : MonoBehaviour
         }
         else if (col.transform.tag == "PlayerAttack")
         {
+            Explode();
             if (capturedAlly != null)
             {
                 capturedAlly.DetachFromShip(0.0f, true);
@@ -289,5 +297,19 @@ public class EnemyShipScript : MonoBehaviour
         capturedAlly = objTemp.GetComponent<BaseAllyScript>();
         capturedAlly.setPowerupType(type);
         capturedAlly.AttachToEnemy(captureSlot);
+    }
+
+    // Plays sound effects
+    private void PlaySoundEffect(AudioClip theClip)
+    {
+        soundPlayer.clip = theClip;
+        soundPlayer.Play();
+    }
+
+    public void Explode()
+    {
+        GameObject objTemp = Instantiate(explosionPrefab, this.transform.position, Quaternion.identity);
+        ExplodeSoundScript explosionScript = objTemp.GetComponent<ExplodeSoundScript>();
+        explosionScript.DoExplosion(1, 0.5f);
     }
 }

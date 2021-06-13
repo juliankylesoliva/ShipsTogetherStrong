@@ -2,13 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum AllyType { Base, Speed, Rapid, Magnify, Shield, Reflector, Copycat, Score, Bomb, Parasite, Life }
+public enum AllyType { Base, Speed, Rapid, Magnify, Shield, Reflector, Copycat, Score, Bomb, Parasite, Life, None }
 public enum AttachType { None, Player, Enemy }
 
 public class BaseAllyScript : MonoBehaviour
 {
     /* COMPONENTS */
     [HideInInspector] public Rigidbody2D rb2D;
+    [HideInInspector] public AudioSource soundPlayer;
 
     /* PRIVATE VARIABLES */
     [HideInInspector] public bool isAttached = false;
@@ -21,10 +22,17 @@ public class BaseAllyScript : MonoBehaviour
     public bool spawnInFreefall = false;
     public float baseDespawnTimer = 10.0f;
 
+    /* DRAG AND DROP */
+    public AllySpriteList allySprites;
+    public AllySoundList allySounds;
+    public SpriteRenderer spriteRender;
+    public GameObject explosionPrefab;
+
     // Start is called before the first frame update
     void Start()
     {
         rb2D = this.gameObject.GetComponent<Rigidbody2D>();
+        soundPlayer = this.gameObject.GetComponent<AudioSource>();
         if (spawnInFreefall) { SpawnInFreefall(); }
     }
 
@@ -50,6 +58,43 @@ public class BaseAllyScript : MonoBehaviour
     public void setPowerupType(AllyType type)
     {
         powerupType = type;
+
+        switch (type)
+        {
+            case AllyType.Speed:
+                spriteRender.sprite = allySprites.spriteList[1];
+                break;
+            case AllyType.Rapid:
+                spriteRender.sprite = allySprites.spriteList[2];
+                break;
+            case AllyType.Magnify:
+                spriteRender.sprite = allySprites.spriteList[3];
+                break;
+            case AllyType.Score:
+                spriteRender.sprite = allySprites.spriteList[8];
+                break;
+            case AllyType.Shield:
+                spriteRender.sprite = allySprites.spriteList[4];
+                break;
+            case AllyType.Reflector:
+                spriteRender.sprite = allySprites.spriteList[6];
+                break;
+            case AllyType.Copycat:
+                spriteRender.sprite = allySprites.spriteList[7];
+                break;
+            case AllyType.Bomb:
+                spriteRender.sprite = allySprites.spriteList[9];
+                break;
+            case AllyType.Parasite:
+                spriteRender.sprite = allySprites.spriteList[10];
+                break;
+            case AllyType.Life:
+                spriteRender.sprite = allySprites.spriteList[11];
+                break;
+            default:
+                spriteRender.sprite = allySprites.spriteList[0];
+                break;
+        }
     }
 
     // Spawns the ally ship in a freefall state
@@ -62,6 +107,8 @@ public class BaseAllyScript : MonoBehaviour
     public virtual void AttachToPlayer(Transform slot)
     {
         if (isAttached) { return; }
+
+        PlaySoundEffect(allySounds.soundEffects[0]);
 
         rb2D.isKinematic = true;
         rb2D.constraints = RigidbodyConstraints2D.FreezeAll;
@@ -148,6 +195,21 @@ public class BaseAllyScript : MonoBehaviour
     // Call this to destroy the ally ship
     public virtual void DestroyAllyShip(bool isProjectile = false)
     {
+        Explode();
         GameObject.Destroy(this.gameObject);
+    }
+
+    public void Explode()
+    {
+        GameObject objTemp = Instantiate(explosionPrefab, this.transform.position, Quaternion.identity);
+        ExplodeSoundScript explosionScript = objTemp.GetComponent<ExplodeSoundScript>();
+        explosionScript.DoExplosion(2, 0.5f);
+    }
+
+    // Plays sound effects
+    public void PlaySoundEffect(AudioClip theClip)
+    {
+        soundPlayer.clip = theClip;
+        soundPlayer.Play();
     }
 }

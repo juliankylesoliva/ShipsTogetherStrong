@@ -5,7 +5,7 @@ using UnityEngine;
 public class Scorekeeper : MonoBehaviour
 {
     [HideInInspector] public int totalScore = 0;
-    private int increasedBy = 0;
+    [HideInInspector] public int increasedBy = 0;
 
     void Start()
     {
@@ -14,7 +14,7 @@ public class Scorekeeper : MonoBehaviour
 
     void Update()
     {
-        Debug.Log($"Score: {totalScore} ({increasedBy})");
+        //Debug.Log($"Score: {totalScore} ({increasedBy})");
     }
 
     public void AddToScore(int baseValue = 10, int multiplier = 1)
