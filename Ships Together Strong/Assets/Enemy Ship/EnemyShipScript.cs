@@ -149,7 +149,7 @@ public class EnemyShipScript : MonoBehaviour
     }
 
     // Helper function that checks if the player is within firing range
-    private bool isInRange()
+    public bool isInRange()
     {
         return distanceToPlayer > 0.0f && distanceToPlayer <= enemyChaseDistance;
     }

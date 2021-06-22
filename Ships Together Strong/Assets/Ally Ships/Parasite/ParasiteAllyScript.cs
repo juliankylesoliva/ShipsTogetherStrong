@@ -25,14 +25,8 @@ public class ParasiteAllyScript : BaseAllyScript
 
         PlaySoundEffect(allySounds.soundEffects[0]);
 
-        rb2D.isKinematic = true;
-        rb2D.constraints = RigidbodyConstraints2D.FreezeAll;
+        attachHelper(slot);
 
-        this.transform.parent = slot;
-        this.transform.position = slot.position;
-        this.transform.rotation = slot.rotation;
-
-        isAttached = true;
         attachedTo = AttachType.Player;
         StartCoroutine(DoLifeTimer());
     }
@@ -73,13 +67,7 @@ public class ParasiteAllyScript : BaseAllyScript
         else
         {
             // Chases the player without despawning
-            this.transform.parent = null;
-            rb2D.isKinematic = false;
-            rb2D.constraints = RigidbodyConstraints2D.FreezeRotation;
-
-            isAttached = false;
-
-            attachedTo = AttachType.None;
+            detachHelper();
 
             StartCoroutine(StalkPlayer());
         }

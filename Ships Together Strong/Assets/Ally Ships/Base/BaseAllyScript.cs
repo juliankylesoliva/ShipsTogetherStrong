@@ -13,8 +13,6 @@ public class BaseAllyScript : MonoBehaviour
 
     /* PRIVATE VARIABLES */
     [HideInInspector] public bool isAttached = false;
-    [HideInInspector] public float fps = 1.0f / 60.0f;
-    [HideInInspector] public float tempTimerConstant = 1.5f;
     [SerializeField] private AllyType powerupType = AllyType.Base; // Can be edited in the inspector
     [HideInInspector] public AttachType attachedTo = AttachType.None;
 
@@ -110,19 +108,13 @@ public class BaseAllyScript : MonoBehaviour
 
         PlaySoundEffect(allySounds.soundEffects[0]);
 
-        rb2D.isKinematic = true;
-        rb2D.constraints = RigidbodyConstraints2D.FreezeAll;
+        attachHelper(slot);
 
-        this.transform.parent = slot;
-        this.transform.position = slot.position;
-        this.transform.rotation = slot.rotation;
-
-        isAttached = true;
         attachedTo = AttachType.Player;
     }
 
     // Attaches ally to enemy ship
-    public void AttachToEnemy(Transform spot)
+    public void AttachToEnemy(Transform slot)
     {
         if (isAttached) { return; }
 
@@ -131,15 +123,22 @@ public class BaseAllyScript : MonoBehaviour
             rb2D = this.gameObject.GetComponent<Rigidbody2D>();
         }
 
+        attachHelper(slot);
+
+        attachedTo = AttachType.Enemy;
+    }
+
+    // Helper function for base attachment code
+    protected void attachHelper(Transform slot)
+    {
         rb2D.isKinematic = true;
         rb2D.constraints = RigidbodyConstraints2D.FreezeAll;
 
-        this.transform.parent = spot;
-        this.transform.position = spot.position;
-        this.transform.rotation = spot.rotation;
+        this.transform.parent = slot;
+        this.transform.position = slot.position;
+        this.transform.rotation = slot.rotation;
 
         isAttached = true;
-        attachedTo = AttachType.Enemy;
     }
 
     // Detaches ally from its parent
@@ -156,21 +155,26 @@ public class BaseAllyScript : MonoBehaviour
         {
             ejectDirection = Vector2.zero;
         }
-        
 
-        this.transform.parent = null;
-        rb2D.isKinematic = false;
-        rb2D.constraints = RigidbodyConstraints2D.FreezeRotation;
-
-        isAttached = false;
+        detachHelper();
 
         if (ejectSpeed != 0.0f)
         {
             rb2D.AddForce(ejectDirection * ejectSpeed, ForceMode2D.Impulse);
         }
 
-        attachedTo = AttachType.None;
         StartCoroutine(FreefallTimer(baseDespawnTimer));
+    }
+
+    // Helper function for base detachment code
+    protected void detachHelper()
+    {
+        this.transform.parent = null;
+        rb2D.isKinematic = false;
+        rb2D.constraints = RigidbodyConstraints2D.FreezeRotation;
+
+        isAttached = false;
+        attachedTo = AttachType.None;
     }
 
     // Helper function used to keep track of despawn time
@@ -179,14 +183,13 @@ public class BaseAllyScript : MonoBehaviour
         if (isAttached) { yield break; }
 
         float degreesPerSecond = 360.0f / seconds;
-        float degreesPerFrame = degreesPerSecond * fps;
         float currDegrees = 0.0f;
 
         while (currDegrees >= -360.0f && !isAttached)
         {
-            currDegrees -= (degreesPerFrame * tempTimerConstant);
+            currDegrees -= (degreesPerSecond * Time.deltaTime);
             this.transform.rotation = Quaternion.AngleAxis(currDegrees, Vector3.forward);
-            yield return new WaitForSeconds(fps);
+            yield return new WaitForSeconds(0.0f);
         }
 
         if (!isAttached) { GameObject.Destroy(this.gameObject); }

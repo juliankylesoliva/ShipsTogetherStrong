@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: -207366542319172549}
   m_Layer: 0
   m_Name: Bomb Blast
-  m_TagString: Untagged
+  m_TagString: PlayerAttack
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -50,6 +50,7 @@ MonoBehaviour:
   projectileSpeed: 0
   activeTime: 1.6
   baseShotScore: 25
+  basePenaltyScore: 0
   playerShip: {fileID: 0}
 --- !u!50 &1703297186107938115
 Rigidbody2D:

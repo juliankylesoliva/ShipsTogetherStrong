@@ -5,9 +5,10 @@ using UnityEngine;
 public class ReflectorAllyScript : BaseAllyScript
 {
     /* REFLECTOR SHIP VARIABLES */
-    private int reflectState = 0; // 0 = Idle; 1 = Active; 2 = Holding
+    private int reflectState = 0; // 0 = Cooldown; 1 = Active; 2 = Charged
     public GameObject reflectShotPrefab;
     public Transform cannon;
+    public float absorbCooldown = 3.0f;
 
     /* REFLECTOR SHIP METHODS */
 
@@ -22,54 +23,66 @@ public class ReflectorAllyScript : BaseAllyScript
     {
         if (attachedTo == AttachType.Player)
         {
-            if (!isProjectile || reflectState == 0 || reflectState == 2)
-            {
-                Explode();
-                GameObject.Destroy(this.gameObject);
-            }
-            else
+            if (isProjectile && (reflectState > 0))
             {
                 PlaySoundEffect(allySounds.soundEffects[1]);
                 spriteRender.sprite = allySprites.spriteList[13];
                 reflectState = 2;
             }
+            else
+            {
+                Explode();
+                GameObject.Destroy(this.gameObject);
+            }
         }
+    }
+
+    // Modified
+    public override void AttachToPlayer(Transform slot)
+    {
+        if (isAttached) { return; }
+
+        PlaySoundEffect(allySounds.soundEffects[0]);
+
+        attachHelper(slot);
+
+        attachedTo = AttachType.Player;
+        StartCoroutine(DoAbsorbCooldown());
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (isAttached && Input.GetMouseButton(0) && reflectState == 0)
+        if (attachedTo == AttachType.Player)
         {
-            spriteRender.sprite = allySprites.spriteList[12];
-            reflectState = 1;
-        }
-        else if (isAttached && Input.GetMouseButton(0) && reflectState == 1)
-        {
-            spriteRender.sprite = allySprites.spriteList[12];
-            reflectState = 1;
-        }
-        else if (isAttached && !Input.GetMouseButton(0) && reflectState == 1)
-        {
-            spriteRender.sprite = allySprites.spriteList[6];
-            reflectState = 0;
-        }
-        else if (isAttached && Input.GetMouseButton(0) && reflectState == 2)
-        {
-            spriteRender.sprite = allySprites.spriteList[13];
-            reflectState = 2;
-        }
-        else if (isAttached && !Input.GetMouseButton(0) && reflectState == 2)
-        {
-            spriteRender.sprite = allySprites.spriteList[6];
-            PlaySoundEffect(allySounds.soundEffects[2]);
-            reflectState = 0;
-            Instantiate(reflectShotPrefab, cannon);
+            if (isAttached && Input.GetMouseButton(0) && reflectState == 2)
+            {
+                spriteRender.sprite = allySprites.spriteList[6];
+                PlaySoundEffect(allySounds.soundEffects[2]);
+                Instantiate(reflectShotPrefab, cannon);
+                StartCoroutine(DoAbsorbCooldown());
+            }
         }
         else
         {
-            spriteRender.sprite = allySprites.spriteList[6];
-            reflectState = 0;
+            if (reflectState != 0)
+            {
+                reflectState = 0;
+                spriteRender.sprite = allySprites.spriteList[6];
+            }
+        }
+    }
+
+    IEnumerator DoAbsorbCooldown()
+    {
+        reflectState = 0;
+
+        yield return new WaitForSeconds(absorbCooldown);
+
+        if (attachedTo == AttachType.Player)
+        {
+            spriteRender.sprite = allySprites.spriteList[12];
+            reflectState = 1;
         }
     }
 }

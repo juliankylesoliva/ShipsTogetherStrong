@@ -19,6 +19,7 @@ public class MainShipMovement : MonoBehaviour
 
     /* SHIP VARIABLES */
     public float baseShipSpeed = 1.0f;
+    public float baseMaxShipVelocity = 1.0f;
     public float baseFiringDelay = 0.5f;
     public float manualEjectSpeed = 2.0f;
     public float damageEjectSpeed = 5.0f;
@@ -29,6 +30,7 @@ public class MainShipMovement : MonoBehaviour
 
     /* POWER-UP MODIFIERS */
     private float modShipSpeed = 1.0f;
+    private float modMaxShipVelocity = 1.0f;
     private float modSpeedPenalty = 1.0f;
     private float modFiringDelay = 1.0f;
     private float modProjectileSize = 1.0f;
@@ -90,7 +92,10 @@ public class MainShipMovement : MonoBehaviour
     {
         if (!isDamaged && Input.GetKey(KeyCode.Space))
         {
-            rb2D.AddForce(this.transform.up * baseShipSpeed * modShipSpeed);
+            if (rb2D.velocity.magnitude < (baseMaxShipVelocity * modMaxShipVelocity))
+            {
+                rb2D.AddForce(this.transform.up * baseShipSpeed * modShipSpeed);
+            }
         }
     }
 
@@ -260,6 +265,7 @@ public class MainShipMovement : MonoBehaviour
         }
 
         modShipSpeed = (1.0f + (speedCount * 0.25f));
+        modMaxShipVelocity = (1.0f + (speedCount * 0.2f));
         modSpeedPenalty = (1.0f - (shieldCount * 0.125f));
         modFiringDelay = (1.0f - (rapidCount * 0.125f));
         modProjectileSize = (1.0f + (magnifyCount * 0.75f));
@@ -446,6 +452,7 @@ public class MainShipMovement : MonoBehaviour
         explosionScript.DoExplosion(0, 1.0f);
     }
 
+    // Accessor method for isEjectModeOn
     public bool getIsEjectModeOn()
     {
         return isEjectModeOn;

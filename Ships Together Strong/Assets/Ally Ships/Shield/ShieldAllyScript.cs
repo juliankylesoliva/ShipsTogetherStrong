@@ -47,12 +47,7 @@ public class ShieldAllyScript : BaseAllyScript
             ejectDirection = Vector2.zero;
         }
 
-
-        this.transform.parent = null;
-        rb2D.isKinematic = false;
-        rb2D.constraints = RigidbodyConstraints2D.FreezeRotation;
-
-        isAttached = false;
+        detachHelper();
 
         if (ejectSpeed != 0.0f)
         {
@@ -62,8 +57,6 @@ public class ShieldAllyScript : BaseAllyScript
             }
             rb2D.AddForce(ejectDirection * ejectSpeed, ForceMode2D.Impulse);
         }
-
-        attachedTo = AttachType.None;
 
         if (numTimesHit >= 1)
         {

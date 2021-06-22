@@ -11,6 +11,8 @@ public class PlayerProjectile : MonoBehaviour
     public float projectileSpeed = 10.0f;
     public float activeTime = 1.0f;
     public int baseShotScore = 10;
+    public int basePenaltyScore = 5;
+    public int enemyRangeScoreMultiplier = 2;
 
     /* PRIVATE VARIABLES */
     [HideInInspector] public MainShipMovement playerShip;
@@ -32,7 +34,7 @@ public class PlayerProjectile : MonoBehaviour
     }
 
     // Projectile despawns after a short period of time
-    public IEnumerator expireTimer()
+    protected IEnumerator expireTimer()
     {
         yield return new WaitForSeconds(activeTime);
         GameObject.Destroy(this.gameObject);
@@ -43,7 +45,16 @@ public class PlayerProjectile : MonoBehaviour
     {
         if (col.transform.tag == "Enemy")
         {
-            playerShip.scoringSystem.AddToScore(baseShotScore, playerShip.getCurrentScoreMultiplier());
+            EnemyShipScript enemyTemp = col.transform.gameObject.GetComponent<EnemyShipScript>();
+
+            if (enemyTemp.isInRange())
+            {
+                playerShip.scoringSystem.AddToScore(baseShotScore, playerShip.getCurrentScoreMultiplier() * enemyRangeScoreMultiplier);
+            }
+            else
+            {
+                playerShip.scoringSystem.AddToScore(baseShotScore, playerShip.getCurrentScoreMultiplier());
+            }
 
             playerShip.increaseTotalEnemiesDestroyed();
             GameObject.Destroy(col.transform.gameObject);
@@ -59,7 +70,7 @@ public class PlayerProjectile : MonoBehaviour
             }
             else
             {
-                playerShip.scoringSystem.AddToScore(baseShotScore, -5);
+                playerShip.scoringSystem.AddToScore(basePenaltyScore, -1);
             }
 
             allyTemp.DestroyAllyShip();

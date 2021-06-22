@@ -21,7 +21,16 @@ public class BombBlastScript : PlayerProjectile
     {
         if (col.transform.tag == "Enemy")
         {
-            playerShip.scoringSystem.AddToScore(baseShotScore, playerShip.getCurrentScoreMultiplier());
+            EnemyShipScript enemyTemp = col.transform.gameObject.GetComponent<EnemyShipScript>();
+
+            if (enemyTemp.isInRange())
+            {
+                playerShip.scoringSystem.AddToScore(baseShotScore, playerShip.getCurrentScoreMultiplier() * enemyRangeScoreMultiplier);
+            }
+            else
+            {
+                playerShip.scoringSystem.AddToScore(baseShotScore, playerShip.getCurrentScoreMultiplier());
+            }
 
             playerShip.increaseTotalEnemiesDestroyed();
             GameObject.Destroy(col.transform.gameObject);
@@ -36,7 +45,7 @@ public class BombBlastScript : PlayerProjectile
             }
             else
             {
-                playerShip.scoringSystem.AddToScore(baseShotScore, -5);
+                playerShip.scoringSystem.AddToScore(basePenaltyScore, -1);
             }
 
             allyTemp.DestroyAllyShip();
