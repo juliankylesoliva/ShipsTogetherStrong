@@ -6,8 +6,9 @@ public class PlayerProjectile : MonoBehaviour
 {
     /* COMPONENTS */
     private Rigidbody2D rb2D;
-    
+
     /* PROJECTILE VARIABLES */
+    public string projectileName = "Player";
     public float projectileSpeed = 10.0f;
     public float activeTime = 1.0f;
     public int baseShotScore = 10;
@@ -49,11 +50,11 @@ public class PlayerProjectile : MonoBehaviour
 
             if (enemyTemp.isInRange())
             {
-                playerShip.scoringSystem.AddToScore(baseShotScore, playerShip.getCurrentScoreMultiplier() * enemyRangeScoreMultiplier);
+                playerShip.scoringSystem.AddToScore(baseShotScore, playerShip.getCurrentScoreMultiplier() * enemyRangeScoreMultiplier, $"Hit Nearby Enemy ({projectileName})");
             }
             else
             {
-                playerShip.scoringSystem.AddToScore(baseShotScore, playerShip.getCurrentScoreMultiplier());
+                playerShip.scoringSystem.AddToScore(baseShotScore, playerShip.getCurrentScoreMultiplier(), $"Hit Enemy ({projectileName})");
             }
 
             playerShip.increaseTotalEnemiesDestroyed();
@@ -66,11 +67,11 @@ public class PlayerProjectile : MonoBehaviour
 
             if (allyTemp.getPowerupType() == AllyType.Parasite)
             {
-                playerShip.scoringSystem.AddToScore(baseShotScore, playerShip.getCurrentScoreMultiplier() * 10);
+                playerShip.scoringSystem.AddToScore(baseShotScore, playerShip.getCurrentScoreMultiplier() * 10, $"Hit Parasite ({projectileName})");
             }
             else
             {
-                playerShip.scoringSystem.AddToScore(basePenaltyScore, -1);
+                playerShip.scoringSystem.AddToScore(basePenaltyScore, -1, $"Friendly Fire ({projectileName})");
             }
 
             allyTemp.DestroyAllyShip();

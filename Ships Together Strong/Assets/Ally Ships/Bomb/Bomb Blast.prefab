@@ -47,10 +47,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12e288ea35d2bed44ba1c7c3843b6867, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  projectileName: Bomb
   projectileSpeed: 0
   activeTime: 1.6
   baseShotScore: 25
   basePenaltyScore: 0
+  enemyRangeScoreMultiplier: 2
   playerShip: {fileID: 0}
 --- !u!50 &1703297186107938115
 Rigidbody2D:

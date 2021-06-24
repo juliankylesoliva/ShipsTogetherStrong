@@ -52,6 +52,7 @@ public class MainShipMovement : MonoBehaviour
     public Transform[] formationSlots;
     public AudioClip[] soundEffects;
     public GameObject explosionPrefab;
+    public Animator hurtFXAnim;
 
     // Start is called before the first frame update
     void Start()
@@ -290,7 +291,7 @@ public class MainShipMovement : MonoBehaviour
     }
 
     // Helper function -- counts how many allies are attached
-    int getAllyCount()
+    public int getAllyCount()
     {
         int retVal = 0;
 
@@ -345,6 +346,7 @@ public class MainShipMovement : MonoBehaviour
                 ally.DetachFromShip(damageEjectSpeed, true);
             }
 
+            hurtFXAnim.Play("UI_Hurt_Short");
             yield return new WaitForSeconds(knockbackTime);
 
             isDamaged = false;
@@ -365,6 +367,7 @@ public class MainShipMovement : MonoBehaviour
 
             if (livesLeft > 0)
             {
+                hurtFXAnim.Play("UI_Hurt_Long");
                 yield return new WaitForSeconds(respawnTime);
 
                 isDamaged = false;
@@ -375,6 +378,7 @@ public class MainShipMovement : MonoBehaviour
             else
             {
                 // Game Over
+                hurtFXAnim.Play("UI_Hurt_GameOver");
             }
         }
     }
@@ -416,6 +420,7 @@ public class MainShipMovement : MonoBehaviour
         else
         {
             // Game Over
+            hurtFXAnim.Play("UI_Hurt_GameOver");
             isDamaged = true;
         }
     }
@@ -430,6 +435,12 @@ public class MainShipMovement : MonoBehaviour
     public bool getIsDamaged()
     {
         return isDamaged;
+    }
+
+    // Accessor method for isDamageProof
+    public bool getIsDamageproof()
+    {
+        return isDamageproof;
     }
 
     // Accessor method for currentScoreMultiplier

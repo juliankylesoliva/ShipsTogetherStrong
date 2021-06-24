@@ -81,7 +81,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemySpeed: 1.6
   enemyFiringInterval: 1.8
-  enemyChaseDistance: 9
+  enemyChaseDistance: 7.5
   despawnDistance: 30
   spawnAngleDeviation: 5
   cannon: {fileID: 2299970366954508101}

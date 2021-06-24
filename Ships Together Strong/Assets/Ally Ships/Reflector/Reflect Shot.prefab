@@ -46,9 +46,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23f9ba15e92ff1846afecbf8ff9a29db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  projectileName: Reflect
   projectileSpeed: 30
   activeTime: 1.6
   baseShotScore: 50
+  basePenaltyScore: 5
+  enemyRangeScoreMultiplier: 2
   playerShip: {fileID: 0}
 --- !u!50 &2255644728314404834
 Rigidbody2D:

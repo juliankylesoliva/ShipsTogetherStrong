@@ -46,9 +46,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50b185ba7ea64204aa276e478dc04fb9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  projectileName: Copycat
   projectileSpeed: 10
   activeTime: 0.6
   baseShotScore: 5
+  basePenaltyScore: 5
+  enemyRangeScoreMultiplier: 2
   playerShip: {fileID: 0}
 --- !u!58 &4878168457930169615
 CircleCollider2D:

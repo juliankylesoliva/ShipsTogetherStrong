@@ -7,11 +7,44 @@ using TMPro;
 public class FormationUIScript : MonoBehaviour
 {
     public FormationSlotScript formSlot;
-    public TMP_Text formText;
+    public Texture[] formSprites;
+    public RawImage formImage;
+    public Animator formAnim;
+
+    private FormationName prevForm = FormationName.Wing;
 
     // Update is called once per frame
     void Update()
     {
-        formText.SetText($"Form (WASD): {formSlot.currentFormation.ToString()}");
+        //formText.SetText($"Form (WASD): {formSlot.currentFormation.ToString()}");
+        switch (formSlot.currentFormation)
+        {
+            case FormationName.Wing:
+                formImage.texture = formSprites[0];
+                break;
+            case FormationName.Avian:
+                formImage.texture = formSprites[1];
+                break;
+            case FormationName.Snake:
+                formImage.texture = formSprites[2];
+                break;
+            case FormationName.Defense:
+                formImage.texture = formSprites[3];
+                break;
+            default:
+                break;
+        }
+
+        AnimateOnChange();
+
+        prevForm = formSlot.currentFormation;
+    }
+
+    void AnimateOnChange()
+    {
+        if (prevForm != formSlot.currentFormation)
+        {
+            formAnim.Play("UI_Form_Anim");
+        }
     }
 }

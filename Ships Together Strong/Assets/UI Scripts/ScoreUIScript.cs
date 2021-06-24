@@ -12,13 +12,6 @@ public class ScoreUIScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (scoreKeeper.increasedBy > 0)
-        {
-            scoreText.SetText($"{scoreKeeper.totalScore}\n(+{scoreKeeper.increasedBy})");
-        }
-        else
-        {
-            scoreText.SetText($"{scoreKeeper.totalScore}\n({scoreKeeper.increasedBy})");
-        }
+        scoreText.SetText($"SCORE: {scoreKeeper.totalScore} pts");
     }
 }

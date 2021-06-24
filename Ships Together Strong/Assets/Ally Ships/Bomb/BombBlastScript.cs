@@ -25,11 +25,11 @@ public class BombBlastScript : PlayerProjectile
 
             if (enemyTemp.isInRange())
             {
-                playerShip.scoringSystem.AddToScore(baseShotScore, playerShip.getCurrentScoreMultiplier() * enemyRangeScoreMultiplier);
+                playerShip.scoringSystem.AddToScore(baseShotScore, playerShip.getCurrentScoreMultiplier() * enemyRangeScoreMultiplier, $"Hit Nearby Enemy ({projectileName})");
             }
             else
             {
-                playerShip.scoringSystem.AddToScore(baseShotScore, playerShip.getCurrentScoreMultiplier());
+                playerShip.scoringSystem.AddToScore(baseShotScore, playerShip.getCurrentScoreMultiplier(), $"Hit Enemy ({projectileName})");
             }
 
             playerShip.increaseTotalEnemiesDestroyed();
@@ -41,11 +41,11 @@ public class BombBlastScript : PlayerProjectile
 
             if (allyTemp.getPowerupType() == AllyType.Parasite)
             {
-                playerShip.scoringSystem.AddToScore(baseShotScore, playerShip.getCurrentScoreMultiplier() * 10);
+                playerShip.scoringSystem.AddToScore(baseShotScore, playerShip.getCurrentScoreMultiplier() * 10, $"Hit Parasite ({projectileName})");
             }
             else
             {
-                playerShip.scoringSystem.AddToScore(basePenaltyScore, -1);
+                playerShip.scoringSystem.AddToScore(basePenaltyScore, -1, $"Friendly Fire ({projectileName})");
             }
 
             allyTemp.DestroyAllyShip();
