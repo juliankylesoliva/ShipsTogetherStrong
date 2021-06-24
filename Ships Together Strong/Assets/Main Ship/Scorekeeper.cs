@@ -29,6 +29,11 @@ public class Scorekeeper : MonoBehaviour
         totalScore += increasedBy;
         scoreMessage = message;
 
+        if (pointEventLog.childCount == 5)
+        {
+            GameObject.Destroy(pointEventLog.GetChild(0).gameObject);
+        }
+
         GameObject objTemp = Instantiate(scorefeedPrefab, pointEventLog);
         ScoreFeedUIScript feedTemp = objTemp.GetComponent<ScoreFeedUIScript>();
 
