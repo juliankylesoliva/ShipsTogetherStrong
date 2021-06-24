@@ -27,6 +27,9 @@ public class MainShipMovement : MonoBehaviour
     public float respawnTime = 5.0f;
     public float postDamageCooldownTime = 3.0f;
     public int startingLives = 3;
+    public int killstreakBonusInterval = 10;
+    public int maxKillstreak = 100;
+    public int baseKillstreakBonus = 1000;
 
     /* POWER-UP MODIFIERS */
     private float modShipSpeed = 1.0f;
@@ -42,8 +45,9 @@ public class MainShipMovement : MonoBehaviour
     private bool isDamaged = false;
     private bool isDamageproof = false;
     private int totalEnemiesDestroyed = 0;
+    private int enemyKillstreak = 0;
     private int livesLeft;
-    [HideInInspector] public AllyType[] ejectionList;
+    private AllyType[] ejectionList;
 
     /* PREFABS AND OTHER DRAG AND DROPS */
     public Transform cannon;
@@ -322,6 +326,8 @@ public class MainShipMovement : MonoBehaviour
             isDamaged = true;
             shipSprite.color = Color.yellow;
 
+            CutKillstreak();
+
             if (isSlotOccupied(0))
             {
                 BaseAllyScript ally = formationSlots[0].GetChild(0).gameObject.GetComponent<BaseAllyScript>();
@@ -360,6 +366,8 @@ public class MainShipMovement : MonoBehaviour
             decrementLivesLeft();
             shipSprite.color = Color.red;
 
+            ResetKillstreak();
+
             rb2D.velocity = Vector3.zero;
 
             isDamaged = true;
@@ -393,6 +401,34 @@ public class MainShipMovement : MonoBehaviour
         shipSprite.color = Color.white;
     }
 
+    private void CheckKillstreak()
+    {
+        ++enemyKillstreak;
+        if (enemyKillstreak > 0 && (enemyKillstreak % killstreakBonusInterval) == 0)
+        {
+            if (enemyKillstreak > maxKillstreak)
+            {
+                enemyKillstreak = maxKillstreak;
+                scoringSystem.AddToScore(baseKillstreakBonus * (enemyKillstreak / killstreakBonusInterval), currentScoreMultiplier, $"{enemyKillstreak}+ Streak!");
+            }
+            else
+            {
+                scoringSystem.AddToScore(baseKillstreakBonus * (enemyKillstreak / killstreakBonusInterval), currentScoreMultiplier, $"{enemyKillstreak} Streak!");
+            }
+        }
+    }
+
+    private void CutKillstreak(int factor = 2)
+    {
+        if (factor == 0) { return; }
+        enemyKillstreak /= factor;
+    }
+
+    private void ResetKillstreak()
+    {
+        enemyKillstreak = 0;
+    }
+
     // Accessor method for totalEnemiesDestroyed
     public int getTotalEnemiesDestroyed()
     {
@@ -403,6 +439,7 @@ public class MainShipMovement : MonoBehaviour
     public void increaseTotalEnemiesDestroyed()
     {
         ++totalEnemiesDestroyed;
+        CheckKillstreak();
     }
 
     // Setter methods for lives left
@@ -447,6 +484,13 @@ public class MainShipMovement : MonoBehaviour
     public int getCurrentScoreMultiplier()
     {
         return currentScoreMultiplier;
+    }
+
+    // Accessor method for ejectionList Array
+    public AllyType getEjectionList(int index)
+    {
+        if (index < 0 || index > 3) { return AllyType.None; }
+        return ejectionList[index];
     }
 
     // Plays sound effects

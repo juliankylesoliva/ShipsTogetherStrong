@@ -79,7 +79,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e62d0b2f99bfbef4fa9f952a5a9c4c27, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemySpeed: 1.6
+  enemySpeed: 2
+  maxEnemyVelocity: 4
   enemyFiringInterval: 1.8
   enemyChaseDistance: 7.5
   despawnDistance: 30

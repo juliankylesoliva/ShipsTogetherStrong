@@ -9,6 +9,7 @@ public class EnemyShipScript : MonoBehaviour
 
     /* ENEMY VARIABLES */
     public float enemySpeed = 1.5f;
+    public float maxEnemyVelocity = 8.0f;
     public float enemyFiringInterval = 1.0f;
     public float enemyChaseDistance = 4.5f;
     public float despawnDistance = 50.0f;
@@ -78,7 +79,10 @@ public class EnemyShipScript : MonoBehaviour
 
         while (true)
         {
-            rb2D.AddForce(this.transform.up * enemySpeed);
+            if (rb2D.velocity.magnitude < maxEnemyVelocity)
+            {
+                rb2D.AddForce(this.transform.up * enemySpeed);
+            }
             yield return new WaitForSeconds(0.01f);
         }
     }

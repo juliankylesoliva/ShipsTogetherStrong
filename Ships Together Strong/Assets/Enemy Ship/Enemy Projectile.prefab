@@ -129,9 +129,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5505e8c4a5d7b8d4abe254043becf5e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  projectileSpeed: 4
+  projectileName: Player
+  projectileSpeed: 7.5
   activeTime: 3
   baseShotScore: 10
+  basePenaltyScore: 5
+  enemyRangeScoreMultiplier: 2
   playerShip: {fileID: 0}
 --- !u!70 &5466273184683940707
 CapsuleCollider2D:
