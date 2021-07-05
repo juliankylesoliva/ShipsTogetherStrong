@@ -83,7 +83,7 @@ MonoBehaviour:
   maxEnemyVelocity: 4
   enemyFiringInterval: 1.8
   enemyChaseDistance: 7.5
-  despawnDistance: 30
+  despawnDistance: 50
   spawnAngleDeviation: 5
   cannon: {fileID: 2299970366954508101}
   projectile: {fileID: 7344257712115366067, guid: e1203e511e47eff4a8b017d3376611d4, type: 3}

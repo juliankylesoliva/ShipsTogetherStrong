@@ -49,7 +49,7 @@ public class EnemyShipScript : MonoBehaviour
     }
 
     // Initializes the enemy's AI
-    public void InitializeEnemy()
+    public void InitializeEnemy(EnemySpawnerScript spawner = null)
     {
         if (playerShip == null)
         {
@@ -62,7 +62,7 @@ public class EnemyShipScript : MonoBehaviour
         }
 
         pointTowardsPlayer(spawnAngleDeviation);
-        rollForCapturedAlly(50 + playerScript.getTotalEnemiesDestroyed());
+        rollForCapturedAlly(50 + playerScript.getTotalEnemiesDestroyed(), spawner);
         StartCoroutine(calcDistanceToPlayer());
         StartCoroutine(EnemyMove());
         StartCoroutine(EnemyFire());
@@ -199,7 +199,7 @@ public class EnemyShipScript : MonoBehaviour
     }
 
     // Random chance to spawn a captured ally
-    void rollForCapturedAlly(int limit = 50)
+    void rollForCapturedAlly(int limit = 50, EnemySpawnerScript spawner = null)
     {
         int upper = limit;
         if (upper > 100)
@@ -215,43 +215,153 @@ public class EnemyShipScript : MonoBehaviour
         }
         else if (rng >= 11 && rng <= 30)
         {
-            spawnCapturedAlly(AllyType.Speed);
+            if (spawner != null)
+            {
+                if (spawner.getAllyCooldown(AllyType.Speed) == 0)
+                {
+                    spawnCapturedAlly(AllyType.Speed);
+                    spawner.applyAllyCooldown(AllyType.Speed);
+                }
+            }
+            else
+            {
+                spawnCapturedAlly(AllyType.Speed);
+            }
         }
         else if (rng >= 31 && rng <= 50)
         {
-            spawnCapturedAlly(AllyType.Rapid);
+            if (spawner != null)
+            {
+                if (spawner.getAllyCooldown(AllyType.Rapid) == 0)
+                {
+                    spawnCapturedAlly(AllyType.Rapid);
+                    spawner.applyAllyCooldown(AllyType.Rapid);
+                }
+            }
+            else
+            {
+                spawnCapturedAlly(AllyType.Rapid);
+            }
         }
         else if (rng >= 51 && rng <= 70)
         {
-            spawnCapturedAlly(AllyType.Magnify);
+            if (spawner != null)
+            {
+                if (spawner.getAllyCooldown(AllyType.Magnify) == 0)
+                {
+                    spawnCapturedAlly(AllyType.Magnify);
+                    spawner.applyAllyCooldown(AllyType.Magnify);
+                }
+            }
+            else
+            {
+                spawnCapturedAlly(AllyType.Magnify);
+            }
         }
         else if (rng >= 71 && rng <= 75)
         {
-            spawnCapturedAlly(AllyType.Shield);
+            if (spawner != null)
+            {
+                if (spawner.getAllyCooldown(AllyType.Shield) == 0)
+                {
+                    spawnCapturedAlly(AllyType.Shield);
+                    spawner.applyAllyCooldown(AllyType.Shield);
+                }
+            }
+            else
+            {
+                spawnCapturedAlly(AllyType.Shield);
+            }
         }
         else if (rng >= 76 && rng <= 80)
         {
-            spawnCapturedAlly(AllyType.Reflector);
+            if (spawner != null)
+            {
+                if (spawner.getAllyCooldown(AllyType.Reflector) == 0)
+                {
+                    spawnCapturedAlly(AllyType.Reflector);
+                    spawner.applyAllyCooldown(AllyType.Reflector);
+                }
+            }
+            else
+            {
+                spawnCapturedAlly(AllyType.Reflector);
+            }
         }
         else if (rng >= 81 && rng <= 85)
         {
-            spawnCapturedAlly(AllyType.Copycat);
+            if (spawner != null)
+            {
+                if (spawner.getAllyCooldown(AllyType.Copycat) == 0)
+                {
+                    spawnCapturedAlly(AllyType.Copycat);
+                    spawner.applyAllyCooldown(AllyType.Copycat);
+                }
+            }
+            else
+            {
+                spawnCapturedAlly(AllyType.Copycat);
+            }
         }
         else if (rng >= 86 && rng <= 90)
         {
-            spawnCapturedAlly(AllyType.Score);
+            if (spawner != null)
+            {
+                if (spawner.getAllyCooldown(AllyType.Score) == 0)
+                {
+                    spawnCapturedAlly(AllyType.Score);
+                    spawner.applyAllyCooldown(AllyType.Score);
+                }
+            }
+            else
+            {
+                spawnCapturedAlly(AllyType.Score);
+            }
         }
         else if (rng >= 91 && rng <= 95)
         {
-            spawnCapturedAlly(AllyType.Bomb);
+            if (spawner != null)
+            {
+                if (spawner.getAllyCooldown(AllyType.Bomb) == 0)
+                {
+                    spawnCapturedAlly(AllyType.Bomb);
+                    spawner.applyAllyCooldown(AllyType.Bomb);
+                }
+            }
+            else
+            {
+                spawnCapturedAlly(AllyType.Bomb);
+            }
         }
         else if (rng >= 96 && rng <= 98)
         {
-            spawnCapturedAlly(AllyType.Parasite);
+            if (spawner != null)
+            {
+                if (spawner.getAllyCooldown(AllyType.Parasite) == 0)
+                {
+                    spawnCapturedAlly(AllyType.Parasite);
+                    spawner.applyAllyCooldown(AllyType.Parasite);
+                }
+            }
+            else
+            {
+                spawnCapturedAlly(AllyType.Parasite);
+            }
         }
         else if (rng >= 99 && rng <= 100)
         {
-            spawnCapturedAlly(AllyType.Life);
+            if (spawner != null)
+            {
+                if (spawner.getAllyCooldown(AllyType.Life) == 0)
+                {
+                    spawnCapturedAlly(AllyType.Life);
+                    spawner.applyAllyCooldown(AllyType.Life);
+                }
+            }
+            else
+            {
+                spawnCapturedAlly(AllyType.Life);
+            }
         }
         else { /* Nothing */ }
     }
@@ -297,6 +407,8 @@ public class EnemyShipScript : MonoBehaviour
                 objTemp = Instantiate(allyPrefabs[0], captureSlot);
                 break;
         }
+
+
 
         capturedAlly = objTemp.GetComponent<BaseAllyScript>();
         capturedAlly.setPowerupType(type);

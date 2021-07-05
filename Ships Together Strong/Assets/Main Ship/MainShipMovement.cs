@@ -512,4 +512,10 @@ public class MainShipMovement : MonoBehaviour
     {
         return isEjectModeOn;
     }
+
+    // Accessor method for rigidbody velocity
+    public float getVelocity()
+    {
+        return rb2D.velocity.magnitude;
+    }
 }

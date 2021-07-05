@@ -17,20 +17,22 @@ public class PlayerProjectile : MonoBehaviour
 
     /* PRIVATE VARIABLES */
     [HideInInspector] public MainShipMovement playerShip;
+    private bool isGlideshot = false;
+    private Vector3 initialPosition;
+    private float shipVelocity;
 
     // Start is called before the first frame update
     void Start()
     {
-        rb2D = this.gameObject.GetComponent<Rigidbody2D>();
         playerShip = transform.parent.parent.gameObject.GetComponent<MainShipMovement>();
         transform.parent = null;
         StartCoroutine(expireTimer());
+        StartCoroutine(CheckGlideshot());
     }
 
     // Update is called once per frame
     void Update()
     {
-        //rb2D.AddForce(this.transform.up * projectileSpeed, ForceMode2D.Impulse);
         this.transform.position += (this.transform.up * Time.deltaTime * projectileSpeed);
     }
 
@@ -57,6 +59,16 @@ public class PlayerProjectile : MonoBehaviour
                 playerShip.scoringSystem.AddToScore(baseShotScore, playerShip.getCurrentScoreMultiplier(), $"Hit Enemy ({projectileName})");
             }
 
+            if (isGlideshot)
+            {
+                int baseVelocityScoring = (int)(shipVelocity * shipVelocity);
+                int distanceMultiplier = (int)(this.transform.position - initialPosition).magnitude;
+                if (baseVelocityScoring > 0 && distanceMultiplier > 0)
+                {
+                    playerShip.scoringSystem.AddToScore(baseVelocityScoring, distanceMultiplier, $"Glidesnipe (velocity {shipVelocity.ToString("n1")})");
+                }
+            }
+
             playerShip.increaseTotalEnemiesDestroyed();
             GameObject.Destroy(col.transform.gameObject);
             GameObject.Destroy(this.gameObject);
@@ -78,5 +90,19 @@ public class PlayerProjectile : MonoBehaviour
             GameObject.Destroy(this.gameObject);
         }
         else { }
+    }
+
+    // Player Projectile only: Check for Glideshot conditions
+    private IEnumerator CheckGlideshot()
+    {
+        initialPosition = this.transform.position;
+        shipVelocity = playerShip.getVelocity();
+        isGlideshot = true;
+        while (shipVelocity > 0.0f && !Input.GetKey(KeyCode.Space) && !playerShip.getIsDamaged() && !playerShip.getIsDamageproof())
+        {
+            yield return new WaitForSeconds(0.0f);
+        }
+        isGlideshot = false;
+        yield break;
     }
 }
