@@ -66,7 +66,7 @@ public class EnemySpawnerScript : MonoBehaviour
             {
                 tickDownCooldowns();
 
-                int baseMaxEnemySpawns = minEnemySpawns + (playerShip.getTotalEnemiesDestroyed() / 100);
+                int baseMaxEnemySpawns = minEnemySpawns + (playerShip.getTotalEnemiesDestroyed() / 20);
 
                 if (baseMaxEnemySpawns > maxEnemySpawns)
                 {

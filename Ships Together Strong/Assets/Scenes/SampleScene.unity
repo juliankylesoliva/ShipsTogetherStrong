@@ -3064,7 +3064,7 @@ MonoBehaviour:
   enableSpawning: 1
   enemyPrefab: {fileID: 2299970365415207450, guid: ad41b009f9b00d947a55a821e2da0463, type: 3}
   spawnLocation: {fileID: 734871021}
-  spawnDistance: 10
+  spawnDistance: 12
   baseSpawnInterval: 2.5
   spawnIntervalDeviation: 0.75
   minEnemySpawns: 1

@@ -65,7 +65,7 @@ public class PlayerProjectile : MonoBehaviour
                 int distanceMultiplier = (int)(this.transform.position - initialPosition).magnitude;
                 if (baseVelocityScoring > 0 && distanceMultiplier > 0)
                 {
-                    playerShip.scoringSystem.AddToScore(baseVelocityScoring, distanceMultiplier, $"Glidesnipe (velocity {shipVelocity.ToString("n1")})");
+                    playerShip.scoringSystem.AddToScore(baseVelocityScoring, distanceMultiplier, $"Glidesnipe ({shipVelocity.ToString("n1")} units/s)");
                 }
             }
 

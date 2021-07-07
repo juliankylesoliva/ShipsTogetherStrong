@@ -29,7 +29,7 @@ public class Scorekeeper : MonoBehaviour
         totalScore += increasedBy;
         scoreMessage = message;
 
-        if (pointEventLog.childCount == 5)
+        if (pointEventLog.childCount == 8)
         {
             GameObject.Destroy(pointEventLog.GetChild(0).gameObject);
         }

@@ -7,7 +7,7 @@ public class PointEventLogUIScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (this.transform.childCount > 5)
+        if (this.transform.childCount > 8)
         {
             GameObject.Destroy(this.transform.GetChild(0).gameObject);
         }
