@@ -10,6 +10,7 @@ public class FormationUIScript : MonoBehaviour
     public Texture[] formSprites;
     public RawImage formImage;
     public Animator formAnim;
+    public AudioSource soundPlayer;
 
     private FormationName prevForm = FormationName.Wing;
 
@@ -45,6 +46,7 @@ public class FormationUIScript : MonoBehaviour
         if (prevForm != formSlot.currentFormation)
         {
             formAnim.Play("UI_Form_Anim");
+            soundPlayer.Play();
         }
     }
 }

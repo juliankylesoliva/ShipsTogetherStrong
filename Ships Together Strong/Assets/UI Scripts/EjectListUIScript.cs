@@ -13,6 +13,8 @@ public class EjectListUIScript : MonoBehaviour
     public Texture[] trayStates;
     public RawImage[] ejectSlots;
     public Texture[] allyIcons;
+    public AudioSource soundPlayer;
+    public AudioClip[] traySounds;
 
     /* PRIVATE VARIABLES */
     private bool lastEjectState = false;
@@ -33,10 +35,12 @@ public class EjectListUIScript : MonoBehaviour
         if (playerShip.getIsEjectModeOn() && !lastEjectState) // Open
         {
             ejectAnim.Play("EjectTrayOpen");
+            PlaySoundEffect(traySounds[0]);
         }
         else if (!playerShip.getIsEjectModeOn() && lastEjectState) // Close
         {
             ejectAnim.Play("EjectTrayClose");
+            PlaySoundEffect(traySounds[1]);
         }
         else { }
 
@@ -89,5 +93,11 @@ public class EjectListUIScript : MonoBehaviour
                 slot.color = new Color(1.0f, 1.0f, 1.0f, 0.0f);
                 break;
         }
+    }
+
+    private void PlaySoundEffect(AudioClip theClip)
+    {
+        soundPlayer.clip = theClip;
+        soundPlayer.Play();
     }
 }

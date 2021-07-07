@@ -96,6 +96,7 @@ GameObject:
   - component: {fileID: 3340936844329078077}
   - component: {fileID: 3340936844329078079}
   - component: {fileID: -1147946673787774289}
+  - component: {fileID: -5871173001563880442}
   m_Layer: 0
   m_Name: Shield Ally Ship
   m_TagString: Ally
@@ -134,8 +135,6 @@ MonoBehaviour:
   rb2D: {fileID: 0}
   soundPlayer: {fileID: 0}
   isAttached: 0
-  fps: 0.016666668
-  tempTimerConstant: 1.5
   powerupType: 4
   attachedTo: 0
   spawnInFreefall: 0
@@ -288,6 +287,25 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!95 &-5871173001563880442
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3340936844329078074}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 919350e7f2958c84f8f79490f0fe4d52, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &3340936844470471100
 GameObject:
   m_ObjectHideFlags: 0

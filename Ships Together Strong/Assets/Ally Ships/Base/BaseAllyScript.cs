@@ -10,6 +10,7 @@ public class BaseAllyScript : MonoBehaviour
     /* COMPONENTS */
     [HideInInspector] public Rigidbody2D rb2D;
     [HideInInspector] public AudioSource soundPlayer;
+    [HideInInspector] public Animator allyAnim;
 
     /* PRIVATE VARIABLES */
     [HideInInspector] public bool isAttached = false;
@@ -31,6 +32,7 @@ public class BaseAllyScript : MonoBehaviour
     {
         rb2D = this.gameObject.GetComponent<Rigidbody2D>();
         soundPlayer = this.gameObject.GetComponent<AudioSource>();
+        allyAnim = this.gameObject.GetComponent<Animator>();
         if (spawnInFreefall) { SpawnInFreefall(); }
     }
 
@@ -107,6 +109,11 @@ public class BaseAllyScript : MonoBehaviour
         if (isAttached) { return; }
 
         PlaySoundEffect(allySounds.soundEffects[0]);
+
+        if (!allyAnim.GetCurrentAnimatorStateInfo(0).IsName("StaticFreefall"))
+        {
+            allyAnim.Play("StaticFreefall");
+        }
 
         attachHelper(slot);
 
@@ -187,6 +194,10 @@ public class BaseAllyScript : MonoBehaviour
 
         while (currDegrees >= -360.0f && !isAttached)
         {
+            if (currDegrees <= -180.0f && !allyAnim.GetCurrentAnimatorStateInfo(0).IsName("ExpiringFreefall"))
+            {
+                allyAnim.Play("ExpiringFreefall");
+            }
             currDegrees -= (degreesPerSecond * Time.deltaTime);
             this.transform.rotation = Quaternion.AngleAxis(currDegrees, Vector3.forward);
             yield return new WaitForSeconds(0.0f);

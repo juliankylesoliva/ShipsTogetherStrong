@@ -145,7 +145,8 @@ PlayerSettings:
   resolutionScalingMode: 0
   androidSupportedAspectRatio: 1
   androidMaxAspectRatio: 2.1
-  applicationIdentifier: {}
+  applicationIdentifier:
+    Standalone: com.JKSun22.KIN-SHIP
   buildNumber:
     Standalone: 0
     iPhone: 0
@@ -260,7 +261,7 @@ PlayerSettings:
   - m_BuildTarget: 
     m_Icons:
     - serializedVersion: 2
-      m_Icon: {fileID: 2800000, guid: 92819e0094a4c84408ff60c899f16937, type: 3}
+      m_Icon: {fileID: 2800000, guid: f098f3bac7b55f246b89cb29b2c34c69, type: 3}
       m_Width: 128
       m_Height: 128
       m_Kind: 0

@@ -4,12 +4,21 @@ using UnityEngine;
 
 public class Scorekeeper : MonoBehaviour
 {
+    [HideInInspector] public int highScore = 0;
     [HideInInspector] public int totalScore = 0;
     [HideInInspector] public int increasedBy = 0;
     [HideInInspector] public string scoreMessage = "Misc";
 
     public GameObject scorefeedPrefab;
     public Transform pointEventLog;
+
+    void Awake()
+    {
+        if (PlayerPrefs.HasKey("HighScore"))
+        {
+            highScore = PlayerPrefs.GetInt("HighScore");
+        }
+    }
 
     void Start()
     {
@@ -44,6 +53,11 @@ public class Scorekeeper : MonoBehaviour
         else
         {
             feedTemp.InitMessage(new Color(1.0f, 0.0f, 0.0f, 0.5f), $"{scoreMessage}: {increasedBy} pts");
+        }
+
+        if (totalScore > PlayerPrefs.GetInt("HighScore"))
+        {
+            highScore = totalScore;
         }
     }
 }

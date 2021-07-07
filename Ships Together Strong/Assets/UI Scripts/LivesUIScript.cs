@@ -12,13 +12,6 @@ public class LivesUIScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (playerShip.getLivesLeft() > 0)
-        {
-            livesText.SetText($"Lives: {playerShip.getLivesLeft()}");
-        }
-        else
-        {
-            livesText.SetText($"GAME OVER\nPress R to restart");
-        }
+        livesText.SetText($"{playerShip.getLivesLeft()}");
     }
 }

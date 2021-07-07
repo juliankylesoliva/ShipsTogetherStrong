@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 8518138849308945313}
   - component: {fileID: 8518138849308945315}
   - component: {fileID: -6735967717565091151}
+  - component: {fileID: -1416404796668255813}
   m_Layer: 0
   m_Name: Life Ally Ship
   m_TagString: Ally
@@ -51,8 +52,6 @@ MonoBehaviour:
   rb2D: {fileID: 0}
   soundPlayer: {fileID: 0}
   isAttached: 0
-  fps: 0.016666668
-  tempTimerConstant: 1.5
   powerupType: 10
   attachedTo: 0
   spawnInFreefall: 0
@@ -205,6 +204,25 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!95 &-1416404796668255813
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8518138849308945318}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 919350e7f2958c84f8f79490f0fe4d52, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &8518138850240966432
 GameObject:
   m_ObjectHideFlags: 0

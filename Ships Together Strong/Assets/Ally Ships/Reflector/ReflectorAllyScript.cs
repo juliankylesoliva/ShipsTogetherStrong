@@ -44,6 +44,11 @@ public class ReflectorAllyScript : BaseAllyScript
 
         PlaySoundEffect(allySounds.soundEffects[0]);
 
+        if (!allyAnim.GetCurrentAnimatorStateInfo(0).IsName("StaticFreefall"))
+        {
+            allyAnim.Play("StaticFreefall");
+        }
+
         attachHelper(slot);
 
         attachedTo = AttachType.Player;
