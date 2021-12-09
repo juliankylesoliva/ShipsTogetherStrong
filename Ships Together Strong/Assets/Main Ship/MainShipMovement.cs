@@ -465,6 +465,7 @@ public class MainShipMovement : MonoBehaviour
             else
             {
                 // Game Over
+                PlayerPrefs.SetInt("HighScore", scoringSystem.highScore);
                 hurtFXAnim.Play("UI_Hurt_GameOver");
             }
         }
@@ -541,7 +542,6 @@ public class MainShipMovement : MonoBehaviour
         else
         {
             // Game Over
-            PlayerPrefs.SetInt("HighScore", scoringSystem.highScore);
             hurtFXAnim.Play("UI_Hurt_GameOver");
             isDamaged = true;
         }
